@@ -1,6 +1,7 @@
 import { getActorCatalog } from '@/lib/actors.js';
+import ActorCard from '@/components/ActorCard.js';
 
-export const metadata = { title: 'Actors — Build Log' };
+export const metadata = { title: 'Actors' };
 
 export default async function ActorsPage() {
     const actors = await getActorCatalog();
@@ -17,25 +18,8 @@ export default async function ActorsPage() {
             </div>
 
             <div className="catalog-grid">
-                {actors.map((actor) => (
-                    <article className="actor-card" key={actor.slug}>
-                        <span className="actor-card__method">GET /{actor.slug.split('/')[1]}</span>
-                        <h2 className="actor-card__title">{actor.title}</h2>
-                        <p className="actor-card__desc">{actor.description}</p>
-                        <div className="actor-card__footer">
-                            <span className="actor-card__price">
-                                {actor.priceUsd != null ? `$${actor.priceUsd.toFixed(3)}/event` : 'free'}
-                            </span>
-                            <span className="actor-card__links">
-                                <a href={actor.url} target="_blank" rel="noreferrer">
-                                    Apify
-                                </a>
-                                <a href={actor.githubUrl} target="_blank" rel="noreferrer">
-                                    Source
-                                </a>
-                            </span>
-                        </div>
-                    </article>
+                {actors.map((actor, i) => (
+                    <ActorCard actor={actor} revealIndex={i % 8} key={actor.slug} />
                 ))}
             </div>
         </div>

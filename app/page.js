@@ -1,51 +1,184 @@
 import Link from 'next/link';
-import { getPublishedPosts } from '@/lib/db.js';
+import { getActorCatalog } from '@/lib/actors.js';
+import ActorCard from '@/components/ActorCard.js';
+import { SOCIAL_LINKS } from '@/lib/social.js';
 
-// Always reflects the current DB state — this is the CMS's front page, it
-// can't be served from a build-time snapshot.
-export const dynamic = 'force-dynamic';
+export const metadata = {
+    title: { absolute: "Tim's Actors — small data tools, built in public" },
+    description:
+        'A portfolio of Apify actors turning public data into clean JSON. No subscriptions — pay per event, browse the catalog, or follow the build log.',
+};
 
-function excerpt(body, max = 180) {
-    const plain = body.replace(/[#*`_>[\]]/g, '').replace(/\s+/g, ' ').trim();
-    return plain.length > max ? `${plain.slice(0, max).trimEnd()}…` : plain;
-}
+const ICONS = {
+    bolt: (
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="13 2 4 14 11 14 10 22 20 10 13 10 13 2" />
+        </svg>
+    ),
+    tag: (
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 3h8l10 10-8 8L3 11V3z" />
+            <circle cx="7.5" cy="7.5" r="1.15" fill="currentColor" stroke="none" />
+        </svg>
+    ),
+    code: (
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 6 3 12 9 18" />
+            <polyline points="15 6 21 12 15 18" />
+        </svg>
+    ),
+    log: (
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="4" cy="6" r="1" fill="currentColor" stroke="none" />
+            <circle cx="4" cy="12" r="1" fill="currentColor" stroke="none" />
+            <circle cx="4" cy="18" r="1" fill="currentColor" stroke="none" />
+            <line x1="9" y1="6" x2="21" y2="6" />
+            <line x1="9" y1="12" x2="21" y2="12" />
+            <line x1="9" y1="18" x2="21" y2="18" />
+        </svg>
+    ),
+};
 
-function formatTimestamp(value) {
-    return new Date(value).toISOString().slice(0, 16).replace('T', ' ');
+const FEATURES = [
+    {
+        icon: 'bolt',
+        title: 'Real APIs first',
+        desc: 'Official public APIs before scraping, and robots.txt checked when scraping is the only option. Nothing held together with fragile selectors.',
+    },
+    {
+        icon: 'tag',
+        title: 'Pay per event',
+        desc: 'No subscriptions, no seats. Each actor charges a few cents per run — you pay for what you use.',
+    },
+    {
+        icon: 'code',
+        title: 'Source included',
+        desc: 'Every actor ships with its code on GitHub. Read how it works, fork it, or check exactly what data it touches.',
+    },
+    {
+        icon: 'log',
+        title: 'Built in public',
+        desc: "A running log of what shipped, what broke, and what the data source did that the docs never mentioned.",
+    },
+];
+
+function formatPrice(value) {
+    return value < 0.01 ? `$${value.toFixed(3)}` : `$${value.toFixed(2)}`;
 }
 
 export default async function HomePage() {
-    const posts = await getPublishedPosts();
+    const actors = await getActorCatalog();
+    const prices = actors.map((a) => a.priceUsd).filter((p) => p != null);
+    const minPrice = prices.length ? Math.min(...prices) : null;
+    const maxPrice = prices.length ? Math.max(...prices) : null;
 
     return (
-        <div className="wrap">
-            <section className="hero">
-                <p className="hero__eyebrow">activity log</p>
-                <h1 className="hero__title">What shipped, and what broke on the way there.</h1>
-                <p className="hero__lede">
-                    A running record of building a portfolio of small data-fetching tools —
-                    what got built, what the data source did that the docs didn't mention,
-                    and what's live now.
-                </p>
+        <>
+            <section className="landing-hero">
+                <div className="wrap">
+                    <p className="hero__eyebrow" data-reveal style={{ '--i': 0 }}>
+                        the portfolio
+                    </p>
+                    <h1 className="hero__title landing-hero__title" data-reveal style={{ '--i': 1 }}>
+                        Small, sharp data tools — priced per run, not per seat.
+                    </h1>
+                    <p className="hero__lede landing-hero__lede" data-reveal style={{ '--i': 2 }}>
+                        {actors.length} Apify actors turning public data into clean JSON: company
+                        signals, hiring activity, tech stacks, security alerts, and more. Each one
+                        runs on demand and returns structured results in seconds.
+                    </p>
+                    <div className="hero-ctas" data-reveal style={{ '--i': 3 }}>
+                        <Link href="#portfolio" className="cta-btn cta-btn--primary">
+                            Browse the actors
+                        </Link>
+                        <Link href="/log" className="cta-btn cta-btn--ghost">
+                            Read the build log
+                        </Link>
+                    </div>
+                    <dl className="stat-bar" data-reveal style={{ '--i': 4 }}>
+                        <div className="stat">
+                            <dt>Actors live</dt>
+                            <dd>{actors.length}</dd>
+                        </div>
+                        {minPrice != null && (
+                            <div className="stat">
+                                <dt>Per event</dt>
+                                <dd>
+                                    {formatPrice(minPrice)}–{formatPrice(maxPrice)}
+                                </dd>
+                            </div>
+                        )}
+                        <div className="stat">
+                            <dt>Subscriptions</dt>
+                            <dd>Zero</dd>
+                        </div>
+                    </dl>
+                </div>
             </section>
 
-            {posts.length === 0 ? (
-                <p className="log-empty">Nothing published yet.</p>
-            ) : (
-                <ol className="log">
-                    {posts.map((post) => (
-                        <li className="log-entry" key={post.id}>
-                            <div className="log-entry__meta">
-                                <span className="log-entry__time">{formatTimestamp(post.created_at)}</span>
-                            </div>
-                            <h2 className="log-entry__title">
-                                <Link href={`/posts/${post.slug}`}>{post.title}</Link>
-                            </h2>
-                            <p className="log-entry__excerpt">{excerpt(post.body)}</p>
-                        </li>
-                    ))}
-                </ol>
-            )}
-        </div>
+            <section className="features">
+                <div className="wrap">
+                    <div className="features-grid">
+                        {FEATURES.map((f, i) => (
+                            <article className="feature-card" key={f.title} data-reveal style={{ '--i': i }}>
+                                <span className="feature-card__icon" aria-hidden="true">
+                                    {ICONS[f.icon]}
+                                </span>
+                                <h2 className="feature-card__title">{f.title}</h2>
+                                <p className="feature-card__desc">{f.desc}</p>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="portfolio" id="portfolio">
+                <div className="wrap">
+                    <div className="catalog-intro">
+                        <p className="hero__eyebrow" data-reveal style={{ '--i': 0 }}>
+                            the catalog
+                        </p>
+                        <h2 className="hero__title" data-reveal style={{ '--i': 1 }}>
+                            Pick a feed, or see what&rsquo;s next.
+                        </h2>
+                    </div>
+                    <div className="catalog-grid">
+                        {actors.map((actor, i) => (
+                            <ActorCard actor={actor} revealIndex={i % 8} key={actor.slug} />
+                        ))}
+                    </div>
+                    <div className="portfolio-more">
+                        <Link href="/actors" className="cta-btn cta-btn--ghost">
+                            Full catalog &amp; live pricing →
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            <section className="landing-cta">
+                <div className="wrap">
+                    <div className="landing-cta__inner" data-reveal>
+                        <h2 className="landing-cta__title">Have a specific feed in mind?</h2>
+                        <p className="landing-cta__lede">
+                            Every actor here started as someone&rsquo;s specific need. Check the source,
+                            or watch the build log for what&rsquo;s shipping next.
+                        </p>
+                        <div className="hero-ctas">
+                            <a
+                                href={SOCIAL_LINKS.github}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="cta-btn cta-btn--primary"
+                            >
+                                See the code
+                            </a>
+                            <Link href="/log" className="cta-btn cta-btn--ghost">
+                                Read the build log
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </>
     );
 }

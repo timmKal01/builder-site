@@ -5,15 +5,40 @@
     --accent: #2e6b5e;
     --accent-2: #c7561e;
     --border: #d8d5ce;
+    --surface: #ffffff;
     --panel: #12181b;
     --panel-ink: #e8e6df;
     --panel-border: #2a3338;
+    --btn-primary-bg: #1b1f23;
+    --btn-primary-ink: #ffffff;
 
     --font-display: var(--font-space-grotesk), sans-serif;
     --font-body: var(--font-plex-sans), sans-serif;
     --font-mono: var(--font-plex-mono), monospace;
 
     --radius: 3px;
+}
+
+/* Explicit data-theme attribute, set before paint by the inline script in
+   layout.js — no media-query fallback needed since it's always present. */
+:root[data-theme='dark'] {
+    --bg: #14181b;
+    --ink: #e8e6df;
+    --ink-muted: #9aa3ab;
+    --accent: #57bfa3;
+    --accent-2: #e2793f;
+    --border: #2a3338;
+    --surface: #1c2226;
+    --panel: #232a2f;
+    --panel-border: #343d43;
+    --btn-primary-bg: #e8e6df;
+    --btn-primary-ink: #14181b;
+}
+
+:root[data-theme='dark'] .landing-hero::before {
+    background:
+        radial-gradient(60% 60% at 30% 20%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+        radial-gradient(50% 50% at 80% 10%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 70%);
 }
 
 * {
@@ -74,9 +99,9 @@ a:hover {
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
@@ -112,6 +137,28 @@ a:hover {
     text-decoration: none;
 }
 
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--ink-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.theme-toggle:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+}
+
 .site-footer {
     border-top: 1px solid var(--border);
     margin-top: 80px;
@@ -119,6 +166,34 @@ a:hover {
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--ink-muted);
+}
+
+.site-footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-bottom: 14px;
+}
+
+.site-footer__social {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.site-footer__social a {
+    display: inline-flex;
+    color: var(--ink-muted);
+}
+
+.site-footer__social a:hover {
+    color: var(--ink);
+}
+
+.site-footer__copyright {
+    font-size: 11px;
 }
 
 /* --- Hero --- */
@@ -274,6 +349,232 @@ a:hover {
     border-radius: var(--radius);
 }
 
+/* --- Scroll reveal (progressive enhancement) --- */
+/* Elements are only ever hidden once `.js` is set by the inline script in
+   layout.js, so content stays fully visible if JS never runs. */
+
+.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+        opacity 0.55s ease,
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+.js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* --- Landing hero --- */
+
+.landing-hero {
+    position: relative;
+    padding: 88px 0 64px;
+    overflow: hidden;
+}
+
+.landing-hero::before {
+    content: '';
+    position: absolute;
+    inset: -30% -10% auto -10%;
+    height: 480px;
+    background:
+        radial-gradient(60% 60% at 30% 20%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+        radial-gradient(50% 50% at 80% 10%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.landing-hero__title {
+    max-width: 20ch;
+    font-size: clamp(34px, 6vw, 60px);
+}
+
+.landing-hero__lede {
+    max-width: 60ch;
+    font-size: 19px;
+}
+
+.hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 32px 0 40px;
+}
+
+.cta-btn {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 13px 24px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.cta-btn:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.cta-btn--primary {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-ink);
+    border: 1px solid var(--btn-primary-bg);
+}
+
+.cta-btn--primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.cta-btn--ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+}
+
+.cta-btn--ghost:hover {
+    border-color: var(--ink);
+}
+
+.stat-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin: 0;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.stat {
+    margin: 0;
+}
+
+.stat dt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    margin: 0 0 4px;
+}
+
+.stat dd {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* --- Features --- */
+
+.features {
+    padding: 8px 0 16px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.feature-card {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -18px rgba(20, 24, 28, 0.35);
+}
+
+.feature-card__icon {
+    display: inline-flex;
+    color: var(--accent);
+    margin-bottom: 14px;
+}
+
+.feature-card__title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.feature-card__desc {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* --- Portfolio section (landing) --- */
+
+.portfolio {
+    padding: 56px 0 8px;
+}
+
+.portfolio .catalog-grid {
+    padding-top: 8px;
+}
+
+.portfolio-more {
+    padding: 32px 0 60px;
+    text-align: center;
+}
+
+/* --- Bottom CTA --- */
+
+.landing-cta {
+    padding: 12px 0 88px;
+}
+
+.landing-cta__inner {
+    text-align: center;
+    padding: 56px 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    color: var(--panel-ink);
+}
+
+.landing-cta__title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3.5vw, 32px);
+    margin: 0 0 12px;
+}
+
+.landing-cta__lede {
+    max-width: 56ch;
+    margin: 0 auto 28px;
+    color: #b7bcc2;
+}
+
+.landing-cta .hero-ctas {
+    justify-content: center;
+    margin: 0;
+}
+
+.landing-cta .cta-btn--ghost {
+    color: var(--panel-ink);
+    border-color: var(--panel-border);
+}
+
+.landing-cta .cta-btn--ghost:hover {
+    border-color: var(--panel-ink);
+}
+
 /* --- Actor catalog --- */
 
 .catalog-intro {
@@ -296,6 +597,14 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.actor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 28px -20px rgba(0, 0, 0, 0.55);
 }
 
 .actor-card__method {
@@ -376,7 +685,7 @@ a:hover {
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: #fff;
+    background: var(--surface);
     color: var(--ink);
 }
 
@@ -402,8 +711,8 @@ a:hover {
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: var(--ink);
-    color: #fff;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-ink);
     border: none;
     padding: 11px 20px;
     border-radius: var(--radius);
