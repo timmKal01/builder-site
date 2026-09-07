@@ -3,9 +3,13 @@ import { requireSession } from '@/lib/session.js';
 import { getAllPosts } from '@/lib/db.js';
 import { logoutAction } from './actions.js';
 
+function formatDate(value) {
+    return new Date(value).toISOString().slice(0, 10);
+}
+
 export default async function AdminDashboard() {
     await requireSession();
-    const posts = getAllPosts();
+    const posts = await getAllPosts();
 
     return (
         <div className="wrap">
@@ -45,7 +49,7 @@ export default async function AdminDashboard() {
                                             {post.published ? 'live' : 'draft'}
                                         </span>
                                     </td>
-                                    <td>{post.created_at}</td>
+                                    <td>{formatDate(post.created_at)}</td>
                                     <td>
                                         <div className="admin-row-actions">
                                             <Link href={`/admin/posts/${post.id}/edit`}>Edit</Link>

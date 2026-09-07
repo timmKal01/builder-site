@@ -6,13 +6,12 @@ function excerpt(body, max = 180) {
     return plain.length > max ? `${plain.slice(0, max).trimEnd()}…` : plain;
 }
 
-function formatTimestamp(iso) {
-    const d = new Date(`${iso}Z`);
-    return d.toISOString().slice(0, 16).replace('T', ' ');
+function formatTimestamp(value) {
+    return new Date(value).toISOString().slice(0, 16).replace('T', ' ');
 }
 
-export default function HomePage() {
-    const posts = getPublishedPosts();
+export default async function HomePage() {
+    const posts = await getPublishedPosts();
 
     return (
         <div className="wrap">

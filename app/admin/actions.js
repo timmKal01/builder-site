@@ -17,8 +17,8 @@ export async function createPostAction(prevState, formData) {
         return { error: 'Title and body are both required.' };
     }
 
-    const slug = uniqueSlug(title);
-    createPost({ slug, title, body, published });
+    const slug = await uniqueSlug(title);
+    await createPost({ slug, title, body, published });
 
     revalidatePath('/');
     revalidatePath('/admin');
@@ -37,13 +37,13 @@ export async function updatePostAction(prevState, formData) {
         return { error: 'Title and body are both required.' };
     }
 
-    const existing = getPostById(id);
+    const existing = await getPostById(id);
     if (!existing) {
         return { error: 'Post not found.' };
     }
 
-    const slug = existing.title === title ? existing.slug : uniqueSlug(title, id);
-    updatePost(id, { slug, title, body, published });
+    const slug = existing.title === title ? existing.slug : await uniqueSlug(title, id);
+    await updatePost(id, { slug, title, body, published });
 
     revalidatePath('/');
     revalidatePath('/admin');
@@ -54,7 +54,7 @@ export async function updatePostAction(prevState, formData) {
 export async function deletePostAction(formData) {
     await requireSession();
     const id = Number(formData.get('id'));
-    deletePost(id);
+    await deletePost(id);
     revalidatePath('/');
     revalidatePath('/admin');
     redirect('/admin');

@@ -23,7 +23,7 @@ export default function PostForm({ action, post }) {
             </div>
 
             <label className="form-checkbox">
-                <input type="checkbox" name="published" defaultChecked={post?.published === 1} />
+                <input type="checkbox" name="published" defaultChecked={post?.published === true} />
                 Published
             </label>
 

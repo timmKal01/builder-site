@@ -2,21 +2,20 @@ import { notFound } from 'next/navigation';
 import { marked } from 'marked';
 import { getPostBySlug } from '@/lib/db.js';
 
-function formatTimestamp(iso) {
-    const d = new Date(`${iso}Z`);
-    return d.toISOString().slice(0, 16).replace('T', ' ');
+function formatTimestamp(value) {
+    return new Date(value).toISOString().slice(0, 16).replace('T', ' ');
 }
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
     if (!post || !post.published) return {};
     return { title: post.title };
 }
 
 export default async function PostPage({ params }) {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
     if (!post || !post.published) notFound();
 
     return (

@@ -7,7 +7,7 @@ import PostForm from '../../../PostForm.js';
 export default async function EditPostPage({ params }) {
     await requireSession();
     const { id } = await params;
-    const post = getPostById(Number(id));
+    const post = await getPostById(Number(id));
     if (!post) notFound();
 
     return (
