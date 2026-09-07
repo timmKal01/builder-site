@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { getPublishedPosts } from '@/lib/db.js';
 
+// Always reflects the current DB state — this is the CMS's front page, it
+// can't be served from a build-time snapshot.
+export const dynamic = 'force-dynamic';
+
 function excerpt(body, max = 180) {
     const plain = body.replace(/[#*`_>[\]]/g, '').replace(/\s+/g, ' ').trim();
     return plain.length > max ? `${plain.slice(0, max).trimEnd()}…` : plain;
