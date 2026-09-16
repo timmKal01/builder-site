@@ -628,6 +628,22 @@ a:hover {
     margin: 0;
 }
 
+.actor-card__demo {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 4px 10px;
+}
+
+.actor-card__demo:hover {
+    background: var(--accent);
+    color: var(--panel);
+    text-decoration: none;
+}
+
 .actor-card__footer {
     display: flex;
     align-items: center;
@@ -821,4 +837,93 @@ a:hover {
     gap: 14px;
     font-family: var(--font-mono);
     font-size: 12px;
+}
+
+/* --- Try-it-live demo --- */
+
+.demo-intro {
+    padding: 48px 0 8px;
+}
+
+.demo-panel {
+    padding: 24px 0 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.demo-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.demo-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px 18px;
+}
+
+.demo-form .form-field {
+    margin-bottom: 0;
+}
+
+.form-field select {
+    font-family: var(--font-body);
+    font-size: 15px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.demo-note {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin: 0;
+}
+
+.demo-empty {
+    color: var(--ink-muted);
+    font-size: 15px;
+}
+
+.demo-results {
+    overflow-x: auto;
+}
+
+.demo-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.demo-table th {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.demo-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.demo-table .mono {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-muted);
 }
