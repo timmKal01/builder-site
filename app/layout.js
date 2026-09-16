@@ -45,6 +45,9 @@ export const metadata = {
         template: "%s — Tim's Actors",
     },
     description: 'Shipping small data tools in public.',
+    verification: {
+        google: 'dGGzJEEr_kn7zjWhnwxny0qVfvTpLp3EE_3jUPhC4pg',
+    },
 };
 
 export default function RootLayout({ children }) {
