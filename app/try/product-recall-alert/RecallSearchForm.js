@@ -16,10 +16,13 @@ const CLASSIFICATIONS = [
     ['Class III', 'Class III (least severe)'],
 ];
 
+const ACTOR_URL = 'https://apify.com/m_ctim/product-recall-alert';
+
 export default function RecallSearchForm() {
     const [form, setForm] = useState({ category: 'all', keyword: '', classification: 'all' });
     const [results, setResults] = useState(null);
     const [error, setError] = useState(null);
+    const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
 
     function updateField(field) {
@@ -30,6 +33,7 @@ export default function RecallSearchForm() {
         event.preventDefault();
         setPending(true);
         setError(null);
+        setCapped(false);
         setResults(null);
 
         try {
@@ -41,6 +45,7 @@ export default function RecallSearchForm() {
             const data = await res.json();
             if (!res.ok) {
                 setError(data.error || 'Something went wrong.');
+                setCapped(res.status === 429);
             } else {
                 setResults(data.results);
             }
@@ -97,33 +102,63 @@ export default function RecallSearchForm() {
 
             {error && <p className="form-error">{error}</p>}
 
+            {capped && (
+                <div className="demo-cta">
+                    <p className="demo-cta__title">Free demo runs used up for today</p>
+                    <p className="demo-cta__body">
+                        Run product-recall-alert on Apify with your own account for unlimited
+                        searches, saved schedules, and full result sets.
+                    </p>
+                    <div className="demo-cta__actions">
+                        <a className="btn" href={ACTOR_URL} target="_blank" rel="noopener noreferrer">
+                            Run it on Apify
+                        </a>
+                    </div>
+                </div>
+            )}
+
             {results && results.length === 0 && (
                 <p className="demo-empty">No recalls matched that search in the last 30 days. Try a broader keyword or clear a filter.</p>
             )}
 
             {results && results.length > 0 && (
-                <div className="demo-results">
-                    <table className="demo-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Firm</th>
-                                <th>Class</th>
-                                <th>Category</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {results.map((r) => (
-                                <tr key={r.recallNumber}>
-                                    <td>{r.productDescription}</td>
-                                    <td>{r.recallingFirm}</td>
-                                    <td>{r.classification}</td>
-                                    <td className="mono">{r.category}</td>
+                <>
+                    <div className="demo-results">
+                        <table className="demo-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Firm</th>
+                                    <th>Class</th>
+                                    <th>Category</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {results.map((r) => (
+                                    <tr key={r.recallNumber}>
+                                        <td>{r.productDescription}</td>
+                                        <td>{r.recallingFirm}</td>
+                                        <td>{r.classification}</td>
+                                        <td className="mono">{r.category}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="demo-cta">
+                        <p className="demo-cta__title">That's live data</p>
+                        <p className="demo-cta__body">
+                            Run this on your own schedule, with your own categories and keywords,
+                            directly on Apify.
+                        </p>
+                        <div className="demo-cta__actions">
+                            <a className="btn" href={ACTOR_URL} target="_blank" rel="noopener noreferrer">
+                                Run it on Apify
+                            </a>
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

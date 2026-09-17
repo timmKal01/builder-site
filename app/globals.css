@@ -928,6 +928,38 @@ a:hover {
     color: var(--ink-muted);
 }
 
+.demo-cta {
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.demo-cta__title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin: 0;
+}
+
+.demo-cta__body {
+    font-size: 15px;
+    color: var(--ink);
+    margin: 0;
+}
+
+.demo-cta__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
 .briefing-card {
     background: var(--panel);
     color: var(--panel-ink);

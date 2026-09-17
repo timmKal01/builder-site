@@ -17,10 +17,13 @@ function formatDate(value) {
     return value ? new Date(value).toISOString().slice(0, 10) : '—';
 }
 
+const ACTOR_URL = 'https://apify.com/m_ctim/disaster-declaration-tracker';
+
 export default function DeclarationSearchForm() {
     const [form, setForm] = useState({ state: '', incidentType: '' });
     const [results, setResults] = useState(null);
     const [error, setError] = useState(null);
+    const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
 
     function updateField(field) {
@@ -31,6 +34,7 @@ export default function DeclarationSearchForm() {
         event.preventDefault();
         setPending(true);
         setError(null);
+        setCapped(false);
         setResults(null);
 
         try {
@@ -42,6 +46,7 @@ export default function DeclarationSearchForm() {
             const data = await res.json();
             if (!res.ok) {
                 setError(data.error || 'Something went wrong.');
+                setCapped(res.status === 429);
             } else {
                 setResults(data.results);
             }
@@ -88,37 +93,67 @@ export default function DeclarationSearchForm() {
 
             {error && <p className="form-error">{error}</p>}
 
+            {capped && (
+                <div className="demo-cta">
+                    <p className="demo-cta__title">Free demo runs used up for today</p>
+                    <p className="demo-cta__body">
+                        Run disaster-declaration-tracker on Apify with your own account for
+                        unlimited searches, saved schedules, and full result sets.
+                    </p>
+                    <div className="demo-cta__actions">
+                        <a className="btn" href={ACTOR_URL} target="_blank" rel="noopener noreferrer">
+                            Run it on Apify
+                        </a>
+                    </div>
+                </div>
+            )}
+
             {results && results.length === 0 && (
                 <p className="demo-empty">No declarations matched that search in the last 90 days. Try a different state or clear the incident type.</p>
             )}
 
             {results && results.length > 0 && (
-                <div className="demo-results">
-                    <table className="demo-table">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>State</th>
-                                <th>Type</th>
-                                <th>Declared</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {results.map((d) => (
-                                <tr key={d.femaDeclarationString}>
-                                    <td>
-                                        <a href={d.url} target="_blank" rel="noreferrer">
-                                            {d.declarationTitle}
-                                        </a>
-                                    </td>
-                                    <td>{d.state}</td>
-                                    <td>{d.incidentType}</td>
-                                    <td className="mono">{formatDate(d.declarationDate)}</td>
+                <>
+                    <div className="demo-results">
+                        <table className="demo-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>State</th>
+                                    <th>Type</th>
+                                    <th>Declared</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {results.map((d) => (
+                                    <tr key={d.femaDeclarationString}>
+                                        <td>
+                                            <a href={d.url} target="_blank" rel="noreferrer">
+                                                {d.declarationTitle}
+                                            </a>
+                                        </td>
+                                        <td>{d.state}</td>
+                                        <td>{d.incidentType}</td>
+                                        <td className="mono">{formatDate(d.declarationDate)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="demo-cta">
+                        <p className="demo-cta__title">That's live data</p>
+                        <p className="demo-cta__body">
+                            Run this on your own schedule, with your own states and incident types,
+                            directly on Apify.
+                        </p>
+                        <div className="demo-cta__actions">
+                            <a className="btn" href={ACTOR_URL} target="_blank" rel="noopener noreferrer">
+                                Run it on Apify
+                            </a>
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );
