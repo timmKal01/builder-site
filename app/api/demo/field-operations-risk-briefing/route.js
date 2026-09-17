@@ -1,4 +1,4 @@
-import { tryRecordDemoRun } from '@/lib/db.js';
+import { tryRecordDemoRun, hashDemoIp, isAllowedDemoOrigin } from '@/lib/db.js';
 
 const ACTOR_PATH = 'm_ctim~field-operations-risk-briefing';
 const DEMO_KEY = 'field-operations-risk-briefing';
@@ -17,6 +17,10 @@ export async function POST(request) {
         return Response.json({ error: 'Demo is not configured on this deployment.' }, { status: 500 });
     }
 
+    if (!isAllowedDemoOrigin(request)) {
+        return Response.json({ error: 'Forbidden.' }, { status: 403 });
+    }
+
     let body;
     try {
         body = await request.json();
@@ -29,7 +33,7 @@ export async function POST(request) {
         return Response.json({ error: 'Pick one of the listed locations.' }, { status: 400 });
     }
 
-    const allowed = await tryRecordDemoRun(DEMO_KEY);
+    const allowed = await tryRecordDemoRun(DEMO_KEY, hashDemoIp(request));
     if (!allowed) {
         return Response.json(
             { error: "This live demo has hit today's free-run limit. Run it yourself on Apify, or check back tomorrow." },

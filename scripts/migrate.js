@@ -21,11 +21,16 @@ await pool.query(`
   CREATE TABLE IF NOT EXISTS demo_runs (
     id SERIAL PRIMARY KEY,
     demo_key TEXT NOT NULL,
+    ip_hash TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )
 `);
+await pool.query(`ALTER TABLE demo_runs ADD COLUMN IF NOT EXISTS ip_hash TEXT`);
 await pool.query(`
   CREATE INDEX IF NOT EXISTS demo_runs_key_created_idx ON demo_runs (demo_key, created_at)
+`);
+await pool.query(`
+  CREATE INDEX IF NOT EXISTS demo_runs_key_ip_created_idx ON demo_runs (demo_key, ip_hash, created_at)
 `);
 
 console.log('migrated');
