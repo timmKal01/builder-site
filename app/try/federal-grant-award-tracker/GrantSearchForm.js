@@ -1,0 +1,127 @@
+'use client';
+
+import { useState } from 'react';
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+});
+
+export default function GrantSearchForm() {
+    const [form, setForm] = useState({ keyword: 'climate resilience', agency: '', recipientState: '' });
+    const [results, setResults] = useState(null);
+    const [error, setError] = useState(null);
+    const [pending, setPending] = useState(false);
+
+    function updateField(field) {
+        return (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        setPending(true);
+        setError(null);
+        setResults(null);
+
+        try {
+            const res = await fetch('/api/demo/federal-grant-award-tracker', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setError(data.error || 'Something went wrong.');
+            } else {
+                setResults(data.results);
+            }
+        } catch {
+            setError('Could not reach the demo. Try again in a moment.');
+        } finally {
+            setPending(false);
+        }
+    }
+
+    return (
+        <div className="demo-panel">
+            <form onSubmit={handleSubmit} className="demo-form">
+                <div className="demo-form-grid">
+                    <div className="form-field">
+                        <label htmlFor="keyword">Keyword</label>
+                        <input
+                            id="keyword"
+                            type="text"
+                            value={form.keyword}
+                            onChange={updateField('keyword')}
+                            placeholder="e.g. climate resilience"
+                        />
+                    </div>
+
+                    <div className="form-field">
+                        <label htmlFor="agency">Awarding agency</label>
+                        <input
+                            id="agency"
+                            type="text"
+                            value={form.agency}
+                            onChange={updateField('agency')}
+                            placeholder="e.g. National Science Foundation"
+                        />
+                    </div>
+
+                    <div className="form-field">
+                        <label htmlFor="recipientState">Recipient state</label>
+                        <input
+                            id="recipientState"
+                            type="text"
+                            value={form.recipientState}
+                            onChange={updateField('recipientState')}
+                            placeholder="e.g. CA"
+                            maxLength={2}
+                        />
+                    </div>
+                </div>
+
+                <button className="btn" type="submit" disabled={pending}>
+                    {pending ? 'Searching…' : 'Search awards'}
+                </button>
+                <p className="demo-note">Shared demo, capped per day. Last 30 days, 10 results, largest awards first.</p>
+            </form>
+
+            {error && <p className="form-error">{error}</p>}
+
+            {results && results.length === 0 && (
+                <p className="demo-empty">No awards matched that search in the last 30 days. Try a broader keyword or clear a filter.</p>
+            )}
+
+            {results && results.length > 0 && (
+                <div className="demo-results">
+                    <table className="demo-table">
+                        <thead>
+                            <tr>
+                                <th>Recipient</th>
+                                <th>Amount</th>
+                                <th>Agency</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {results.map((award) => (
+                                <tr key={award.awardId}>
+                                    <td>
+                                        <a href={award.usaspendingUrl} target="_blank" rel="noreferrer">
+                                            {award.recipientName}
+                                        </a>
+                                    </td>
+                                    <td className="mono">{currencyFormatter.format(award.awardAmount)}</td>
+                                    <td>{award.awardingAgency}</td>
+                                    <td>{award.awardType || '—'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
+}
