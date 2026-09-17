@@ -17,6 +17,9 @@ export default async function AdminDashboard() {
                 <div className="admin-toolbar">
                     <h1 className="page-title">Posts</h1>
                     <div className="admin-toolbar__actions">
+                        <Link href="/admin/leads" className="btn btn-ghost">
+                            Demo leads
+                        </Link>
                         <Link href="/admin/posts/new" className="btn">
                             New post
                         </Link>

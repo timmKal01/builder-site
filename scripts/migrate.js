@@ -22,10 +22,12 @@ await pool.query(`
     id SERIAL PRIMARY KEY,
     demo_key TEXT NOT NULL,
     ip_hash TEXT,
+    email TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )
 `);
 await pool.query(`ALTER TABLE demo_runs ADD COLUMN IF NOT EXISTS ip_hash TEXT`);
+await pool.query(`ALTER TABLE demo_runs ADD COLUMN IF NOT EXISTS email TEXT`);
 await pool.query(`
   CREATE INDEX IF NOT EXISTS demo_runs_key_created_idx ON demo_runs (demo_key, created_at)
 `);

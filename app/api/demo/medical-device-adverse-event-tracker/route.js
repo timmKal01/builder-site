@@ -1,4 +1,4 @@
-import { tryRecordDemoRun, hashDemoIp, isAllowedDemoOrigin } from '@/lib/db.js';
+import { tryRecordDemoRun, hashDemoIp, isAllowedDemoOrigin, isValidDemoEmail } from '@/lib/db.js';
 
 const ACTOR_PATH = 'm_ctim~medical-device-adverse-event-tracker';
 const DEMO_KEY = 'medical-device-adverse-event-tracker';
@@ -26,6 +26,10 @@ export async function POST(request) {
         return Response.json({ error: 'Invalid request body.' }, { status: 400 });
     }
 
+    if (!isValidDemoEmail(body.email)) {
+        return Response.json({ error: 'Enter a valid email to run the demo.' }, { status: 400 });
+    }
+
     const input = {
         deviceName: clean(body.deviceName),
         eventType: ALLOWED_EVENT_TYPES.has(body.eventType) ? body.eventType : 'all',
@@ -33,7 +37,7 @@ export async function POST(request) {
         maxResults: DEMO_MAX_RESULTS,
     };
 
-    const allowed = await tryRecordDemoRun(DEMO_KEY, hashDemoIp(request));
+    const allowed = await tryRecordDemoRun(DEMO_KEY, hashDemoIp(request), body.email);
     if (!allowed) {
         return Response.json(
             { error: "This live demo has hit today's free-run limit. Run it yourself on Apify, or check back tomorrow." },

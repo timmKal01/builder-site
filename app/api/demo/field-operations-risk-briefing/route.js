@@ -1,4 +1,4 @@
-import { tryRecordDemoRun, hashDemoIp, isAllowedDemoOrigin } from '@/lib/db.js';
+import { tryRecordDemoRun, hashDemoIp, isAllowedDemoOrigin, isValidDemoEmail } from '@/lib/db.js';
 
 const ACTOR_PATH = 'm_ctim~field-operations-risk-briefing';
 const DEMO_KEY = 'field-operations-risk-briefing';
@@ -33,7 +33,11 @@ export async function POST(request) {
         return Response.json({ error: 'Pick one of the listed locations.' }, { status: 400 });
     }
 
-    const allowed = await tryRecordDemoRun(DEMO_KEY, hashDemoIp(request));
+    if (!isValidDemoEmail(body.email)) {
+        return Response.json({ error: 'Enter a valid email to run the demo.' }, { status: 400 });
+    }
+
+    const allowed = await tryRecordDemoRun(DEMO_KEY, hashDemoIp(request), body.email);
     if (!allowed) {
         return Response.json(
             { error: "This live demo has hit today's free-run limit. Run it yourself on Apify, or check back tomorrow." },

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoEmail } from '@/lib/useDemoEmail.js';
+import DemoEmailField from '@/components/DemoEmailField.js';
 
 const EVENT_TYPES = [
     ['all', 'All event types'],
@@ -17,6 +19,7 @@ export default function DeviceEventSearchForm() {
     const [error, setError] = useState(null);
     const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
+    const [email, setEmail] = useDemoEmail();
 
     function updateField(field) {
         return (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
@@ -33,7 +36,7 @@ export default function DeviceEventSearchForm() {
             const res = await fetch('/api/demo/medical-device-adverse-event-tracker', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
+                body: JSON.stringify({ ...form, email }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -75,6 +78,8 @@ export default function DeviceEventSearchForm() {
                         </select>
                     </div>
                 </div>
+
+                <DemoEmailField value={email} onChange={setEmail} />
 
                 <button className="btn" type="submit" disabled={pending}>
                     {pending ? 'Searching…' : 'Search reports'}

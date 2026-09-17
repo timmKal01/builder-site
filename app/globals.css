@@ -889,6 +889,27 @@ a:hover {
     margin: 0;
 }
 
+.demo-email-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+}
+
+.demo-email-field label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+}
+
+.demo-email-field span {
+    font-size: 12px;
+    color: var(--ink-muted);
+}
+
 .demo-empty {
     color: var(--ink-muted);
     font-size: 15px;
