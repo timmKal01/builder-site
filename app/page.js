@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { getActorCatalog } from '@/lib/actors.js';
+import { getActorCatalog, getPortfolioCount } from '@/lib/actors.js';
 import ActorCard from '@/components/ActorCard.js';
 import { SOCIAL_LINKS } from '@/lib/social.js';
 
 export const metadata = {
     title: { absolute: "Tim's Actors — small data tools, built in public" },
     description:
-        'A portfolio of Apify actors turning public data into clean JSON. No subscriptions — pay per event, browse the catalog, or follow the build log.',
+        'A portfolio of Apify actors turning public data into clean JSON. No subscriptions: $0.007 per event, which is $7 per 1,000. No proxies, no logins.',
 };
 
 const ICONS = {
@@ -42,13 +42,13 @@ const ICONS = {
 const FEATURES = [
     {
         icon: 'bolt',
-        title: 'Real APIs first',
-        desc: 'Official public APIs before scraping, and robots.txt checked when scraping is the only option. Nothing held together with fragile selectors.',
+        title: 'Public data, played straight',
+        desc: "Official public APIs and open government data. No proxies, nothing that works around bot protection, and no actor logs in to anything or asks for your passwords. When a page has to be read directly, robots.txt is respected.",
     },
     {
         icon: 'tag',
-        title: 'Pay per event',
-        desc: 'No subscriptions, no seats. Each actor charges a few cents per run — you pay for what you use.',
+        title: '$7 per 1,000',
+        desc: 'Every actor costs $0.007 per event. No subscriptions, no seats. Many charge once per search rather than per row, so a search that returns 50 results still costs $0.007.',
     },
     {
         icon: 'code',
@@ -66,8 +66,13 @@ function formatPrice(value) {
     return value < 0.01 ? `$${value.toFixed(3)}` : `$${value.toFixed(2)}`;
 }
 
+function formatPriceRange(min, max) {
+    return min === max ? formatPrice(min) : `${formatPrice(min)}–${formatPrice(max)}`;
+}
+
 export default async function HomePage() {
-    const actors = await getActorCatalog();
+    const [actors, portfolioCount] = await Promise.all([getActorCatalog(), getPortfolioCount()]);
+    const liveCount = portfolioCount ?? actors.length;
     const prices = actors.map((a) => a.priceUsd).filter((p) => p != null);
     const minPrice = prices.length ? Math.min(...prices) : null;
     const maxPrice = prices.length ? Math.max(...prices) : null;
@@ -83,7 +88,7 @@ export default async function HomePage() {
                         Small, sharp data tools — priced per run, not per seat.
                     </h1>
                     <p className="hero__lede landing-hero__lede" data-reveal style={{ '--i': 2 }}>
-                        {actors.length} Apify actors turning public data into clean JSON: company
+                        {liveCount} Apify actors turning public data into clean JSON: company
                         signals, hiring activity, tech stacks, security alerts, and more. Each one
                         runs on demand and returns structured results in seconds.
                     </p>
@@ -98,14 +103,12 @@ export default async function HomePage() {
                     <dl className="stat-bar" data-reveal style={{ '--i': 4 }}>
                         <div className="stat">
                             <dt>Actors live</dt>
-                            <dd>{actors.length}</dd>
+                            <dd>{liveCount}</dd>
                         </div>
                         {minPrice != null && (
                             <div className="stat">
                                 <dt>Per event</dt>
-                                <dd>
-                                    {formatPrice(minPrice)}–{formatPrice(maxPrice)}
-                                </dd>
+                                <dd>{formatPriceRange(minPrice, maxPrice)}</dd>
                             </div>
                         )}
                         <div className="stat">
