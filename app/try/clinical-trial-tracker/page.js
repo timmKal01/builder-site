@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import TrialSearchForm from './TrialSearchForm.js';
 
-export const metadata = { title: 'Try Clinical Trial Tracker' };
+export const metadata = pageMeta({
+    title: "Clinical Trial Tracker: Free Live Demo",
+    description: "Search new clinical trials by sponsor or condition. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/clinical-trial-tracker',
+});
 
 export default function TryClinicalTrialTrackerPage() {
     return (

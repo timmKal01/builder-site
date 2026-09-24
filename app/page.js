@@ -2,12 +2,33 @@ import Link from 'next/link';
 import { getActorCatalog, getPortfolioCount } from '@/lib/actors.js';
 import ActorCard from '@/components/ActorCard.js';
 import { SOCIAL_LINKS } from '@/lib/social.js';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, jsonLd, pageMeta } from '@/lib/site.js';
 
-export const metadata = {
-    title: { absolute: "Tim's Actors — small data tools, built in public" },
-    description:
-        'A portfolio of Apify actors turning public data into clean JSON. No subscriptions: $0.007 per event, which is $7 per 1,000. No proxies, no logins.',
-};
+export const metadata = pageMeta({ title: SITE_TITLE, description: SITE_DESCRIPTION, path: '/', absoluteTitle: true });
+
+function catalogSchema(actors) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: `${SITE_NAME} public data APIs`,
+        itemListElement: actors.map((a, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+                '@type': 'SoftwareApplication',
+                name: a.title,
+                description: a.description,
+                url: a.url,
+                applicationCategory: 'DeveloperApplication',
+                operatingSystem: 'Web',
+                publisher: { '@id': `${SITE_URL}/#org` },
+                ...(a.priceUsd != null && {
+                    offers: { '@type': 'Offer', price: String(a.priceUsd), priceCurrency: 'USD' },
+                }),
+            },
+        })),
+    };
+}
 
 const ICONS = {
     bolt: (
@@ -79,18 +100,20 @@ export default async function HomePage() {
 
     return (
         <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(catalogSchema(actors))} />
             <section className="landing-hero">
                 <div className="wrap">
                     <p className="hero__eyebrow" data-reveal style={{ '--i': 0 }}>
                         the portfolio
                     </p>
                     <h1 className="hero__title landing-hero__title" data-reveal style={{ '--i': 1 }}>
-                        Small, sharp data tools — priced per run, not per seat.
+                        Public data APIs for recalls, grants &amp; court records.
                     </h1>
                     <p className="hero__lede landing-hero__lede" data-reveal style={{ '--i': 2 }}>
-                        {liveCount} Apify actors turning public data into clean JSON: company
-                        signals, hiring activity, tech stacks, security alerts, and more. Each one
-                        runs on demand and returns structured results in seconds.
+                        {liveCount} ready-to-run APIs that turn public records and open data into clean
+                        JSON: FDA recalls, federal grants, court opinions, SEC filings, broker and
+                        provider lookups, security alerts, and more. Each one runs on demand on
+                        Apify and returns structured results in seconds.
                     </p>
                     <div className="hero-ctas" data-reveal style={{ '--i': 3 }}>
                         <Link href="#portfolio" className="cta-btn cta-btn--primary">

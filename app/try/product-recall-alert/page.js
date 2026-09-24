@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import RecallSearchForm from './RecallSearchForm.js';
 
-export const metadata = { title: 'Try Product Recall Alert' };
+export const metadata = pageMeta({
+    title: "Product Recall Alert: Free Live Demo",
+    description: "Search FDA drug, food, and device recalls in one query. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/product-recall-alert',
+});
 
 export default function TryRecallPage() {
     return (

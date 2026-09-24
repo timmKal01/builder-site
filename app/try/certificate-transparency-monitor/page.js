@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import CertSearchForm from './CertSearchForm.js';
 
-export const metadata = { title: 'Try Certificate Transparency Monitor' };
+export const metadata = pageMeta({
+    title: "Certificate Transparency Monitor: Free Live Demo",
+    description: "Search newly logged SSL certificates for a domain. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/certificate-transparency-monitor',
+});
 
 export default function TryCertMonitorPage() {
     return (

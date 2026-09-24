@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import EarthquakeSearchForm from './EarthquakeSearchForm.js';
 
-export const metadata = { title: 'Try Earthquake Alert' };
+export const metadata = pageMeta({
+    title: "Earthquake Alert: Free Live Demo",
+    description: "Check recent earthquakes worldwide by minimum magnitude. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/earthquake-alert',
+});
 
 export default function TryEarthquakeAlertPage() {
     return (

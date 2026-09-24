@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import { getPublishedPosts } from '@/lib/db.js';
+import { pageMeta } from '@/lib/site.js';
 
 // Always reflects the current DB state — this is the CMS's front page, it
 // can't be served from a build-time snapshot.
 export const dynamic = 'force-dynamic';
 
-export const metadata = { title: 'Log' };
+export const metadata = pageMeta({
+    title: 'Build Log: Working With Public Data APIs',
+    description:
+        'Notes from building public data APIs: what shipped, what broke, and what government and open data sources do that their docs never mention.',
+    path: '/log',
+});
 
 function excerpt(body, max = 180) {
     const plain = body.replace(/[#*`_>[\]]/g, '').replace(/\s+/g, ' ').trim();

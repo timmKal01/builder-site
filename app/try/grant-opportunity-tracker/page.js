@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import GrantOppSearchForm from './GrantOppSearchForm.js';
 
-export const metadata = { title: 'Try Grant Opportunity Tracker' };
+export const metadata = pageMeta({
+    title: "Grant Opportunity Tracker: Free Live Demo",
+    description: "Search newly posted federal grant opportunities. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/grant-opportunity-tracker',
+});
 
 export default function TryGrantOppTrackerPage() {
     return (

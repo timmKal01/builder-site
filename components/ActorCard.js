@@ -16,7 +16,7 @@ export default function ActorCard({ actor, revealIndex }) {
 
             <div className="actor-card__footer">
                 <span className="actor-card__price">
-                    {actor.priceUsd != null ? `$${actor.priceUsd.toFixed(3)}/event` : 'free'}
+                    {actor.priceUsd != null ? `$${actor.priceUsd.toFixed(3)}/event` : 'free during launch'}
                 </span>
                 <span className="actor-card__links">
                     <a href={actor.url} target="_blank" rel="noreferrer">

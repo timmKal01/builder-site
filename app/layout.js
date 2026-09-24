@@ -4,6 +4,7 @@ import ScrollReveal from '@/components/ScrollReveal.js';
 import ThemeToggle from '@/components/ThemeToggle.js';
 import { DevToIcon, DiscordIcon, GithubIcon, XIcon } from '@/components/SocialIcons.js';
 import { SOCIAL_LINKS } from '@/lib/social.js';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, jsonLd } from '@/lib/site.js';
 import './globals.css';
 
 // Runs synchronously in <head>, before first paint, so there's no flash of
@@ -40,14 +41,40 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata = {
+    metadataBase: new URL(SITE_URL),
     title: {
-        default: "Tim's Actors",
-        template: "%s — Tim's Actors",
+        default: SITE_TITLE,
+        template: `%s | ${SITE_NAME}`,
     },
-    description: 'Shipping small data tools in public.',
+    description: SITE_DESCRIPTION,
+    applicationName: SITE_NAME,
+    openGraph: { siteName: SITE_NAME, type: 'website', locale: 'en_US' },
+    twitter: { card: 'summary_large_image' },
     verification: {
         google: 'dGGzJEEr_kn7zjWhnwxny0qVfvTpLp3EE_3jUPhC4pg',
     },
+};
+
+const SITE_SCHEMA = {
+    '@context': 'https://schema.org',
+    '@graph': [
+        {
+            '@type': 'Organization',
+            '@id': `${SITE_URL}/#org`,
+            name: SITE_NAME,
+            url: SITE_URL,
+            logo: `${SITE_URL}/icon.png`,
+            sameAs: Object.values(SOCIAL_LINKS).filter(Boolean),
+        },
+        {
+            '@type': 'WebSite',
+            '@id': `${SITE_URL}/#website`,
+            name: SITE_NAME,
+            url: SITE_URL,
+            description: SITE_DESCRIPTION,
+            publisher: { '@id': `${SITE_URL}/#org` },
+        },
+    ],
 };
 
 export default function RootLayout({ children }) {
@@ -60,12 +87,13 @@ export default function RootLayout({ children }) {
             <head>
                 {/* Sets data-theme and the .js class before paint — see THEME_INIT_SCRIPT above. */}
                 <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+                <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(SITE_SCHEMA)} />
             </head>
             <body>
                 <header className="site-header">
                     <div className="site-header__row">
                         <Link href="/" className="wordmark">
-                            Tim&rsquo;s Actors
+                            {SITE_NAME}
                         </Link>
                         <nav className="site-nav">
                             <Link href="/log">Log</Link>
@@ -77,7 +105,7 @@ export default function RootLayout({ children }) {
                 <main>{children}</main>
                 <footer className="site-footer">
                     <div className="wrap site-footer__top">
-                        <span>shipping small data tools in public</span>
+                        <span>public records in, clean JSON out</span>
                         <div className="site-footer__social">
                             {SOCIAL_LINKS.devto && (
                                 <a href={SOCIAL_LINKS.devto} target="_blank" rel="noreferrer" aria-label="dev.to">

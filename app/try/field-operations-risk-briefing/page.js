@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import BriefingForm from './BriefingForm.js';
 
-export const metadata = { title: 'Try Field Operations Risk Briefing' };
+export const metadata = pageMeta({
+    title: "Field Operations Risk Briefing: Free Live Demo",
+    description: "Check ground weather and GPS/radio conditions together. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/field-operations-risk-briefing',
+});
 
 export default function TryFieldOpsPage() {
     return (

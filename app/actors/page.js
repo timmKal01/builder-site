@@ -1,7 +1,13 @@
 import { getActorCatalog } from '@/lib/actors.js';
 import ActorCard from '@/components/ActorCard.js';
+import { pageMeta } from '@/lib/site.js';
 
-export const metadata = { title: 'Actors' };
+export const metadata = pageMeta({
+    title: 'Public Data API Catalog: Recalls, Grants, Court & SEC Data',
+    description:
+        'Ready-to-run public data APIs: FDA and consumer recalls, federal grants, court opinions, SEC filings, NPI and FINRA lookups. $0.007 per event, no logins.',
+    path: '/actors',
+});
 
 export default async function ActorsPage() {
     const actors = await getActorCatalog();

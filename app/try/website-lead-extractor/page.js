@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import LeadExtractorForm from './LeadExtractorForm.js';
 
-export const metadata = { title: 'Try Website Lead Extractor' };
+export const metadata = pageMeta({
+    title: "Website Lead Extractor: Free Live Demo",
+    description: "Pull emails, phones, and social links off a site. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/website-lead-extractor',
+});
 
 export default function TryLeadExtractorPage() {
     return (

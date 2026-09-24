@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import RiverLevelSearchForm from './RiverLevelSearchForm.js';
 
-export const metadata = { title: 'Try River Water Level Tracker' };
+export const metadata = pageMeta({
+    title: "River Water Level Tracker: Free Live Demo",
+    description: "Check real-time river gauge readings by state. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/river-water-level-tracker',
+});
 
 export default function TryRiverLevelPage() {
     return (

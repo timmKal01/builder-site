@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import DeviceEventSearchForm from './DeviceEventSearchForm.js';
 
-export const metadata = { title: 'Try Medical Device Adverse Event Tracker' };
+export const metadata = pageMeta({
+    title: "Medical Device Adverse Event Tracker: Free Live Demo",
+    description: "Search FDA MAUDE adverse event reports by device. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/medical-device-adverse-event-tracker',
+});
 
 export default function TryMaudePage() {
     return (

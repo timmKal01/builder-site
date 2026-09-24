@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import ContractSearchForm from './ContractSearchForm.js';
 
-export const metadata = { title: 'Try Federal Contract Win Finder' };
+export const metadata = pageMeta({
+    title: "Federal Contract Win Finder: Free Live Demo",
+    description: "Search who just won a federal contract. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/federal-contract-award-tracker',
+});
 
 export default function TryFederalContractPage() {
     return (

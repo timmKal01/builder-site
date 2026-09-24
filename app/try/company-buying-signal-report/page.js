@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import BuyingSignalForm from './BuyingSignalForm.js';
 
-export const metadata = { title: 'Try Company Buying Signal Report' };
+export const metadata = pageMeta({
+    title: "Company Buying Signal Report: Free Live Demo",
+    description: "Combine hiring signal, tech stack, and contact info into one score. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/company-buying-signal-report',
+});
 
 export default function TryBuyingSignalReportPage() {
     return (

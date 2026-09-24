@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import AdvisorySearchForm from './AdvisorySearchForm.js';
 
-export const metadata = { title: 'Try GitHub Security Advisory Tracker' };
+export const metadata = pageMeta({
+    title: "GitHub Security Advisory Tracker: Free Live Demo",
+    description: "Search GitHub security advisories by ecosystem and package. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/github-security-advisory-tracker',
+});
 
 export default function TryAdvisoryTrackerPage() {
     return (

@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import NpmStatsForm from './NpmStatsForm.js';
 
-export const metadata = { title: 'Try NPM Download Stats Tracker' };
+export const metadata = pageMeta({
+    title: "NPM Download Stats Tracker: Free Live Demo",
+    description: "Compare npm download counts, this period vs. last. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/npm-download-stats-tracker',
+});
 
 export default function TryNpmStatsPage() {
     return (

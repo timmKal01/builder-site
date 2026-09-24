@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import DeclarationSearchForm from './DeclarationSearchForm.js';
 
-export const metadata = { title: 'Try Disaster Declaration Tracker' };
+export const metadata = pageMeta({
+    title: "Disaster Declaration Tracker: Free Live Demo",
+    description: "Search new FEMA disaster declarations. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/disaster-declaration-tracker',
+});
 
 export default function TryFemaPage() {
     return (

@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import WeatherSearchForm from './WeatherSearchForm.js';
 
-export const metadata = { title: 'Try US Weather Tracker' };
+export const metadata = pageMeta({
+    title: "US Weather Tracker: Free Live Demo",
+    description: "Check the National Weather Service forecast for a US location. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/us-weather-tracker',
+});
 
 export default function TryUsWeatherTrackerPage() {
     return (

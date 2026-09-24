@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import HiringSearchForm from './HiringSearchForm.js';
 
-export const metadata = { title: 'Try Company Hiring Tracker' };
+export const metadata = pageMeta({
+    title: "Company Hiring Tracker: Free Live Demo",
+    description: "Pull a company's open roles straight from their job board. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/company-hiring-tracker',
+});
 
 export default function TryHiringTrackerPage() {
     return (

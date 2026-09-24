@@ -1,6 +1,11 @@
+import { pageMeta } from '@/lib/site.js';
 import TechStackForm from './TechStackForm.js';
 
-export const metadata = { title: 'Try Website Tech Stack Detector' };
+export const metadata = pageMeta({
+    title: "Website Tech Stack Detector: Free Live Demo",
+    description: "Find the CMS, JS framework, and CDN behind any site. Run a live demo in your browser, then use the full API on Apify for $0.007 per event.",
+    path: '/try/website-tech-stack-detector',
+});
 
 export default function TryTechStackPage() {
     return (
