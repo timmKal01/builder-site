@@ -2089,3 +2089,70 @@ input[type='radio'] {
     width: 16px;
     height: 16px;
 }
+
+/* ---------------------------------------------------------------------------
+   Touch targets
+
+   Pointer-accurate devices keep the compact sizing the layout is built around.
+   Touch devices get every control up to the 44px minimum, either by growing
+   the control or, where growing it would change the layout, by extending the
+   hit area past the painted box with a pseudo-element.
+--------------------------------------------------------------------------- */
+
+@media (hover: none) and (pointer: coarse) {
+    .cta-btn--sm,
+    .theme-toggle,
+    .actor-card__demo,
+    .site-nav a,
+    .site-footer__links a {
+        min-height: 44px;
+    }
+
+    .theme-toggle {
+        width: 44px;
+    }
+
+    .actor-card__demo,
+    .site-nav a,
+    .site-footer__links a {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* The card footer links are small on purpose, so the hit area grows
+       instead of the text. The horizontal inset is half the flex gap, so
+       neighbouring links meet without overlapping. */
+    .actor-card__links {
+        gap: 18px;
+    }
+
+    .actor-card__links a {
+        position: relative;
+    }
+
+    .actor-card__links a::after {
+        content: '';
+        position: absolute;
+        inset: -12px -9px;
+    }
+
+    /* Same treatment for the social icons in the footer. */
+    .site-footer__social a {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* iOS Safari zooms the page in when a focused field is under 16px, which
+   shifts the layout mid-form. Phone-width fields opt out by being 16px. */
+@media (max-width: 767px) {
+    .form-field input[type='text'],
+    .form-field input[type='password'],
+    .form-field input[type='email'],
+    .form-field input[type='number'],
+    .form-field select,
+    .form-field textarea,
+    .demo-email-field input {
+        font-size: 16px;
+    }
+}
