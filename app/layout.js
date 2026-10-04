@@ -22,10 +22,13 @@ const THEME_INIT_SCRIPT = `
 })();
 `;
 
+// Figtree is a variable font (300-900), so the whole weight range comes from a
+// single file. Asking for discrete weights instead makes next/font resolve five
+// separate URLs, which is what broke the Vercel build.
 const figtree = Figtree({
     subsets: ['latin'],
-    weight: ['400', '500', '600', '700', '800'],
     variable: '--font-figtree',
+    display: 'swap',
 });
 
 const plexMono = IBM_Plex_Mono({
