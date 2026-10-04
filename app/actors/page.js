@@ -13,9 +13,9 @@ export default async function ActorsPage() {
     const actors = await getActorCatalog();
 
     return (
-        <div className="wrap">
+        <div className="wrap page-shell">
             <div className="catalog-intro">
-                <p className="hero__eyebrow">the portfolio</p>
+                <p className="hero__eyebrow">The portfolio</p>
                 <h1 className="hero__title">Data tools, callable on demand.</h1>
                 <p className="hero__lede">
                     Each one runs on Apify and returns clean JSON from public data. Every

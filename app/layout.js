@@ -1,4 +1,4 @@
-import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Figtree, IBM_Plex_Mono } from 'next/font/google';
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal.js';
 import ThemeToggle from '@/components/ThemeToggle.js';
@@ -22,16 +22,10 @@ const THEME_INIT_SCRIPT = `
 })();
 `;
 
-const spaceGrotesk = Space_Grotesk({
+const figtree = Figtree({
     subsets: ['latin'],
-    weight: ['500', '600', '700'],
-    variable: '--font-space-grotesk',
-});
-
-const plexSans = IBM_Plex_Sans({
-    subsets: ['latin'],
-    weight: ['400', '500', '600'],
-    variable: '--font-plex-sans',
+    weight: ['400', '500', '600', '700', '800'],
+    variable: '--font-figtree',
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -77,13 +71,45 @@ const SITE_SCHEMA = {
     ],
 };
 
+const MARK = (
+    <svg
+        viewBox="0 0 24 24"
+        width="17"
+        height="17"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M2 7.5c2.5-3 5-3 7.5 0s5 3 7.5 0 3.5-2.4 5-1.2" />
+        <path d="M2 13c2.5-3 5-3 7.5 0s5 3 7.5 0 3.5-2.4 5-1.2" />
+        <path d="M2 18.5c2.5-3 5-3 7.5 0s5 3 7.5 0 3.5-2.4 5-1.2" />
+    </svg>
+);
+
+function Wordmark() {
+    return (
+        <Link href="/" className="wordmark">
+            <span className="wordmark__mark" aria-hidden="true">
+                {MARK}
+            </span>
+            {SITE_NAME}
+        </Link>
+    );
+}
+
+const FOOTER_SOCIAL = [
+    ['devto', 'dev.to', DevToIcon],
+    ['discord', 'Discord', DiscordIcon],
+    ['github', 'GitHub', GithubIcon],
+    ['x', 'X', XIcon],
+];
+
 export default function RootLayout({ children }) {
     return (
-        <html
-            lang="en"
-            className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}
-            suppressHydrationWarning
-        >
+        <html lang="en" className={`${figtree.variable} ${plexMono.variable}`} suppressHydrationWarning>
             <head>
                 {/* Sets data-theme and the .js class before paint — see THEME_INIT_SCRIPT above. */}
                 <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
@@ -92,44 +118,114 @@ export default function RootLayout({ children }) {
             <body>
                 <header className="site-header">
                     <div className="site-header__row">
-                        <Link href="/" className="wordmark">
-                            {SITE_NAME}
-                        </Link>
+                        <Wordmark />
                         <nav className="site-nav">
-                            <Link href="/log">Log</Link>
-                            <Link href="/actors">Actors</Link>
+                            <Link href="/actors">Catalog</Link>
+                            <Link href="/#how">How it works</Link>
+                            <Link href="/#pricing">Pricing</Link>
+                            <Link href="/log">Build log</Link>
                         </nav>
-                        <ThemeToggle />
+                        <div className="site-header__actions">
+                            <ThemeToggle />
+                            <Link href="/actors" className="cta-btn cta-btn--primary cta-btn--sm cta-btn--nav">
+                                <span className="cta-btn__long">Browse the catalog</span>
+                                <span className="cta-btn__short">Catalog</span>
+                            </Link>
+                        </div>
                     </div>
                 </header>
                 <main>{children}</main>
                 <footer className="site-footer">
-                    <div className="wrap site-footer__top">
-                        <span>public records in, clean JSON out</span>
-                        <div className="site-footer__social">
-                            {SOCIAL_LINKS.devto && (
-                                <a href={SOCIAL_LINKS.devto} target="_blank" rel="noreferrer" aria-label="dev.to">
-                                    {DevToIcon}
-                                </a>
-                            )}
-                            {SOCIAL_LINKS.discord && (
-                                <a href={SOCIAL_LINKS.discord} target="_blank" rel="noreferrer" aria-label="Discord">
-                                    {DiscordIcon}
-                                </a>
-                            )}
-                            {SOCIAL_LINKS.github && (
-                                <a href={SOCIAL_LINKS.github} target="_blank" rel="noreferrer" aria-label="GitHub">
-                                    {GithubIcon}
-                                </a>
-                            )}
-                            {SOCIAL_LINKS.x && (
-                                <a href={SOCIAL_LINKS.x} target="_blank" rel="noreferrer" aria-label="X">
-                                    {XIcon}
-                                </a>
-                            )}
+                    <div className="wrap">
+                        <div className="site-footer__grid">
+                            <div className="site-footer__brand">
+                                <Wordmark />
+                                <p className="site-footer__blurb">
+                                    Public records in, clean JSON out. Pay-per-use data APIs built on
+                                    official sources, with the code for every one of them in the open.
+                                </p>
+                                <div className="site-footer__social">
+                                    {FOOTER_SOCIAL.map(([key, label, icon]) =>
+                                        SOCIAL_LINKS[key] ? (
+                                            <a
+                                                key={key}
+                                                href={SOCIAL_LINKS[key]}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                aria-label={label}
+                                            >
+                                                {icon}
+                                            </a>
+                                        ) : null
+                                    )}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h2 className="site-footer__col-title">Explore</h2>
+                                <ul className="site-footer__links">
+                                    <li>
+                                        <Link href="/actors">Full catalog</Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/#how">How it works</Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/#pricing">What it costs</Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/#faq">FAQ</Link>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h2 className="site-footer__col-title">Build log</h2>
+                                <ul className="site-footer__links">
+                                    <li>
+                                        <Link href="/log">Latest entries</Link>
+                                    </li>
+                                    {SOCIAL_LINKS.devto && (
+                                        <li>
+                                            <a href={SOCIAL_LINKS.devto} target="_blank" rel="noreferrer">
+                                                Writing on dev.to
+                                            </a>
+                                        </li>
+                                    )}
+                                    {SOCIAL_LINKS.x && (
+                                        <li>
+                                            <a href={SOCIAL_LINKS.x} target="_blank" rel="noreferrer">
+                                                Updates on X
+                                            </a>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h2 className="site-footer__col-title">Source</h2>
+                                <ul className="site-footer__links">
+                                    {SOCIAL_LINKS.github && (
+                                        <li>
+                                            <a href={SOCIAL_LINKS.github} target="_blank" rel="noreferrer">
+                                                GitHub
+                                            </a>
+                                        </li>
+                                    )}
+                                    <li>
+                                        <a href="https://apify.com/m_ctim" target="_blank" rel="noreferrer">
+                                            Apify Store
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="site-footer__bottom">
+                            <span>&copy; 2026 Timothy Kalungu. All rights reserved.</span>
+                            <span>Built on public data. No proxies, no logins.</span>
                         </div>
                     </div>
-                    <div className="wrap site-footer__copyright">&copy; 2026 Timothy Kalungu. All rights reserved.</div>
                 </footer>
                 <ScrollReveal />
             </body>
