@@ -26,9 +26,9 @@ export default async function LogPage() {
     const posts = await getPublishedPosts();
 
     return (
-        <div className="wrap">
+        <div className="wrap page-shell">
             <section className="hero">
-                <p className="hero__eyebrow">activity log</p>
+                <p className="hero__eyebrow">Activity log</p>
                 <h1 className="hero__title">What shipped, and what broke on the way there.</h1>
                 <p className="hero__lede">
                     A running record of building a portfolio of small data-fetching tools —
