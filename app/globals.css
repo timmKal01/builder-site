@@ -2164,3 +2164,60 @@ input[type='radio'] {
     justify-content: center;
     padding: 64px 16px 96px;
 }
+
+/* Sign-in sits beside the primary action, so it reads as the quieter of the
+   two without becoming a third button. Hidden on the narrowest screens where
+   only one action fits. */
+.site-header__signin {
+    display: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    padding: 8px 4px;
+    white-space: nowrap;
+}
+
+.site-header__signin:hover {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+@media (min-width: 560px) {
+    .site-header__signin {
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .site-header__signin {
+        min-height: 44px;
+    }
+}
+
+.auth-screen__inner {
+    width: 100%;
+    max-width: 460px;
+    text-align: center;
+}
+
+.auth-screen__title {
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 10px;
+}
+
+.auth-screen__lede {
+    font-size: 16px;
+    color: var(--ink-muted);
+    margin: 0 0 28px;
+    line-height: 1.6;
+}
+
+.auth-screen__alt {
+    font-size: 14px;
+    color: var(--ink-faint);
+    margin: 24px 0 0;
+    line-height: 1.6;
+}

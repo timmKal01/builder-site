@@ -123,16 +123,26 @@ export default function RootLayout({ children }) {
                     <div className="site-header__row">
                         <Wordmark />
                         <nav className="site-nav">
+                            <Link href="/signals">Signals</Link>
                             <Link href="/actors">Catalog</Link>
-                            <Link href="/#how">How it works</Link>
                             <Link href="/#pricing">Pricing</Link>
                             <Link href="/log">Build log</Link>
                         </nav>
                         <div className="site-header__actions">
                             <ThemeToggle />
-                            <Link href="/actors" className="cta-btn cta-btn--primary cta-btn--sm cta-btn--nav">
-                                <span className="cta-btn__long">Browse the catalog</span>
-                                <span className="cta-btn__short">Catalog</span>
+                            {/* Always rendered signed-out, rather than reading the session
+                                here. Showing "Dashboard" to a signed-in visitor would mean
+                                running Clerk's middleware on every marketing request for a
+                                cosmetic label, and these pages are the ones that have to stay
+                                fast. A signed-in visitor who clicks Sign in is sent straight
+                                on to their dashboard by Clerk, so the behaviour is right
+                                either way. */}
+                            <Link href="/sign-in" className="site-header__signin">
+                                Sign in
+                            </Link>
+                            <Link href="/sign-up" className="cta-btn cta-btn--primary cta-btn--sm cta-btn--nav">
+                                <span className="cta-btn__long">Start free</span>
+                                <span className="cta-btn__short">Start</span>
                             </Link>
                         </div>
                     </div>
@@ -167,6 +177,9 @@ export default function RootLayout({ children }) {
                             <div>
                                 <h2 className="site-footer__col-title">Explore</h2>
                                 <ul className="site-footer__links">
+                                    <li>
+                                        <Link href="/signals">Lead signals</Link>
+                                    </li>
                                     <li>
                                         <Link href="/actors">Full catalog</Link>
                                     </li>
