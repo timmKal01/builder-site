@@ -130,9 +130,19 @@ export default function RootLayout({ children }) {
                         </nav>
                         <div className="site-header__actions">
                             <ThemeToggle />
-                            <Link href="/actors" className="cta-btn cta-btn--primary cta-btn--sm cta-btn--nav">
-                                <span className="cta-btn__long">Browse the catalog</span>
-                                <span className="cta-btn__short">Catalog</span>
+                            {/* Always rendered signed-out, rather than reading the session
+                                here. Showing "Dashboard" to a signed-in visitor would mean
+                                running Clerk's middleware on every marketing request for a
+                                cosmetic label, and these pages are the ones that have to stay
+                                fast. A signed-in visitor who clicks Sign in is sent straight
+                                on to their dashboard by Clerk, so the behaviour is right
+                                either way. */}
+                            <Link href="/sign-in" className="site-header__signin">
+                                Sign in
+                            </Link>
+                            <Link href="/sign-up" className="cta-btn cta-btn--primary cta-btn--sm cta-btn--nav">
+                                <span className="cta-btn__long">Start free</span>
+                                <span className="cta-btn__short">Start</span>
                             </Link>
                         </div>
                     </div>
