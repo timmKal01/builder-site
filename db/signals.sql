@@ -104,3 +104,27 @@ CREATE TABLE IF NOT EXISTS signal_matches (
 
 CREATE INDEX IF NOT EXISTS signal_matches_signal_idx ON signal_matches (signal_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS signal_matches_run_idx ON signal_matches (run_id);
+
+-- Every payment, however it arrived. The account row only carries the current
+-- paid_until; this is the history behind it. Needed the first time a customer
+-- asks what they paid and when, which no amount of "the date says so" answers.
+CREATE TABLE IF NOT EXISTS account_payments (
+    id           bigserial PRIMARY KEY,
+    account_id   bigint NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+    amount_minor bigint NOT NULL,
+    currency     text NOT NULL,
+    interval     text NOT NULL,
+    provider     text NOT NULL,            -- manual | paystack
+    reference    text,                     -- M-Pesa code, transfer ref, Paystack id
+    paid_until   timestamptz NOT NULL,     -- what this payment bought
+    created_at   timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS account_payments_account_idx
+    ON account_payments (account_id, created_at DESC);
+
+-- A provider reference is unique where there is one, so replaying the same
+-- Paystack webhook cannot credit an account twice.
+CREATE UNIQUE INDEX IF NOT EXISTS account_payments_reference_idx
+    ON account_payments (provider, reference)
+    WHERE reference IS NOT NULL;
