@@ -2156,3 +2156,11 @@ input[type='radio'] {
         font-size: 16px;
     }
 }
+
+/* --- Customer auth screens --- */
+
+.auth-screen {
+    display: flex;
+    justify-content: center;
+    padding: 64px 16px 96px;
+}
