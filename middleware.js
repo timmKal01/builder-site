@@ -17,5 +17,15 @@ import { clerkMiddleware } from '@clerk/nextjs/server';
 export default clerkMiddleware();
 
 export const config = {
-    matcher: ['/dashboard(.*)', '/sign-in(.*)', '/sign-up(.*)', '/api/signals(.*)'],
+    // /try and /api/demo are here so the demo pages can tell whether someone is
+    // signed in before they press Run. The pages themselves stay public and
+    // indexable — only the run needs an account.
+    matcher: [
+        '/dashboard(.*)',
+        '/sign-in(.*)',
+        '/sign-up(.*)',
+        '/api/signals(.*)',
+        '/try/(.*)',
+        '/api/demo/(.*)',
+    ],
 };

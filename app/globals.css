@@ -2221,3 +2221,28 @@ input[type='radio'] {
     margin: 24px 0 0;
     line-height: 1.6;
 }
+
+/* --- Demo sign-in gate --- */
+
+.demo-gate {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.demo-gate__title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.015em;
+}
+
+.demo-gate__body {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin: 0;
+    line-height: 1.6;
+    max-width: 60ch;
+}

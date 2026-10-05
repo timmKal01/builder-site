@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useDemoEmail } from '@/lib/useDemoEmail.js';
-import DemoEmailField from '@/components/DemoEmailField.js';
+import DemoRunGate from '@/components/DemoRunGate.js';
 
 const LOCATIONS = [
     ['austin-tx', 'Austin, TX'],
@@ -21,7 +20,6 @@ export default function WeatherSearchForm() {
     const [error, setError] = useState(null);
     const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
-    const [email, setEmail] = useDemoEmail();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -34,7 +32,7 @@ export default function WeatherSearchForm() {
             const res = await fetch('/api/demo/us-weather-tracker', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ locationKey, email }),
+                body: JSON.stringify({ locationKey }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -66,7 +64,7 @@ export default function WeatherSearchForm() {
                     </select>
                 </div>
 
-                <DemoEmailField value={email} onChange={setEmail} />
+                <DemoRunGate />
 
                 <button className="btn" type="submit" disabled={pending}>
                     {pending ? 'Checking…' : 'Check forecast'}

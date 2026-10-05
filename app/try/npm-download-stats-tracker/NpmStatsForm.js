@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useDemoEmail } from '@/lib/useDemoEmail.js';
-import DemoEmailField from '@/components/DemoEmailField.js';
+import DemoRunGate from '@/components/DemoRunGate.js';
 
 const ACTOR_URL = 'https://apify.com/m_ctim/npm-download-stats-tracker';
 
@@ -15,7 +14,6 @@ export default function NpmStatsForm() {
     const [error, setError] = useState(null);
     const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
-    const [email, setEmail] = useDemoEmail();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -28,7 +26,7 @@ export default function NpmStatsForm() {
             const res = await fetch('/api/demo/npm-download-stats-tracker', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ packages, email }),
+                body: JSON.stringify({ packages }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -59,7 +57,7 @@ export default function NpmStatsForm() {
                     />
                 </div>
 
-                <DemoEmailField value={email} onChange={setEmail} />
+                <DemoRunGate />
 
                 <button className="btn" type="submit" disabled={pending}>
                     {pending ? 'Checking…' : 'Check downloads'}
