@@ -5,18 +5,27 @@
 --   psql "$DATABASE_URL" -f db/signals.sql
 -- Every statement is guarded, so re-running it is safe.
 
--- A paying customer. Clerk owns identity and Stripe owns billing; this table
--- only holds the join between them plus whatever we need to gate a run without
--- calling out to either on every cron tick.
+-- A paying customer. Clerk owns identity; billing is deliberately not tied to
+-- one processor. Stripe does not support Kenya, and the customer base spans
+-- Nairobi (M-Pesa, KES) and international (cards, USD), so the provider is a
+-- column rather than an assumption. Early accounts are billed by hand and
+-- carry provider 'manual', which the engine treats like any other.
 CREATE TABLE IF NOT EXISTS accounts (
-    id                 bigserial PRIMARY KEY,
-    clerk_user_id      text UNIQUE NOT NULL,
-    email              text NOT NULL,
-    stripe_customer_id text UNIQUE,
-    plan               text NOT NULL DEFAULT 'free',
-    status             text NOT NULL DEFAULT 'active',
-    created_at         timestamptz NOT NULL DEFAULT now()
+    id                  bigserial PRIMARY KEY,
+    clerk_user_id       text UNIQUE NOT NULL,
+    email               text NOT NULL,
+    billing_provider    text NOT NULL DEFAULT 'manual',  -- manual | paystack
+    billing_customer_id text,
+    currency            text NOT NULL DEFAULT 'USD',     -- USD | KES
+    plan                text NOT NULL DEFAULT 'free',
+    status              text NOT NULL DEFAULT 'active',
+    created_at          timestamptz NOT NULL DEFAULT now()
 );
+
+-- One id per provider, but two accounts can both be 'manual' with no id.
+CREATE UNIQUE INDEX IF NOT EXISTS accounts_billing_customer_idx
+    ON accounts (billing_provider, billing_customer_id)
+    WHERE billing_customer_id IS NOT NULL;
 
 -- A saved search. `source` keys into SOURCES in lib/signals/sources.js and
 -- `input` is that actor's own input object, stored whole so a source can grow
