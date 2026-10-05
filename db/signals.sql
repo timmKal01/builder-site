@@ -18,9 +18,23 @@ CREATE TABLE IF NOT EXISTS accounts (
     billing_customer_id text,
     currency            text NOT NULL DEFAULT 'USD',     -- USD | KES
     plan                text NOT NULL DEFAULT 'free',
+    plan_interval       text NOT NULL DEFAULT 'monthly', -- monthly | quarterly
+    -- The single gate on everything paid. A card webhook, an M-Pesa payment
+    -- and a hand-marked invoice all do the same thing: push this date out.
+    -- Nothing downstream has to know which of the three happened.
+    paid_until          timestamptz,
     status              text NOT NULL DEFAULT 'active',
     created_at          timestamptz NOT NULL DEFAULT now()
 );
+
+-- Existing deployments: add the billing date columns without touching rows.
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS plan_interval text NOT NULL DEFAULT 'monthly';
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS paid_until timestamptz;
+
+-- Finding who to remind before they lapse is a scheduled job, so it should
+-- not scan the table to do it.
+CREATE INDEX IF NOT EXISTS accounts_paid_until_idx ON accounts (paid_until)
+    WHERE paid_until IS NOT NULL;
 
 -- One id per provider, but two accounts can both be 'manual' with no id.
 CREATE UNIQUE INDEX IF NOT EXISTS accounts_billing_customer_idx

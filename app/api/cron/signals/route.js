@@ -1,5 +1,6 @@
 import { getDueSignals, startRun, finishRun, filterSeen, commitMatches, touchSignal } from '@/lib/signals/db.js';
 import { runSignal, SignalRunError } from '@/lib/signals/runner.js';
+import { effectivePlan } from '@/lib/signals/plans.js';
 
 // Vercel Cron hits this on a schedule (see vercel.json) and runs every signal
 // that is due.
@@ -51,7 +52,7 @@ export async function GET(request) {
 
     const startedAt = Date.now();
     const db = { startRun, finishRun, filterSeen, commitMatches };
-    const summary = { ran: 0, newLeads: 0, empty: 0, failed: 0, skipped: 0, signals: [] };
+    const summary = { ran: 0, newLeads: 0, empty: 0, failed: 0, gated: 0, skipped: 0, signals: [] };
 
     let due;
     try {
@@ -61,14 +62,36 @@ export async function GET(request) {
     }
 
     for (const signal of due) {
+        // What the account is entitled to right now, not what it once bought.
+        // A lapsed Pro account falls back to the free limits rather than
+        // stopping dead, so it keeps trickling leads and has a reason to renew.
+        const plan = effectivePlan({
+            plan: signal.account_plan,
+            paid_until: signal.account_paid_until,
+        });
+
+        // Signals beyond the plan's allowance, or on a cadence the plan does
+        // not include, are parked rather than run. Their clock still moves on,
+        // otherwise they stay permanently due and are reconsidered every tick.
+        if (Number(signal.slot) > plan.signals || !plan.schedules.includes(signal.schedule)) {
+            await touchSignal(signal.id);
+            summary.gated += 1;
+            summary.signals.push({ id: signal.id, name: signal.name, gated: plan.name });
+            continue;
+        }
+
         if (Date.now() - startedAt > TIME_BUDGET_MS - RESERVE_MS) {
             // Everything left stays due and is picked up on the next tick.
-            summary.skipped = due.length - summary.ran - summary.failed;
+            summary.skipped = due.length - summary.ran - summary.failed - summary.gated;
             break;
         }
 
         try {
-            const result = await runSignal(signal, { db, token: process.env.APIFY_TOKEN });
+            const result = await runSignal(signal, {
+                db,
+                token: process.env.APIFY_TOKEN,
+                maxNew: plan.maxNewPerRun,
+            });
             summary.ran += 1;
             summary.newLeads += result.fresh.length;
             if (result.fresh.length === 0) {
