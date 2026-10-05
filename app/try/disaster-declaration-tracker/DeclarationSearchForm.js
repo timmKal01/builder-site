@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useDemoEmail } from '@/lib/useDemoEmail.js';
-import DemoEmailField from '@/components/DemoEmailField.js';
+import DemoRunGate from '@/components/DemoRunGate.js';
 
 const INCIDENT_TYPES = [
     ['', 'All incident types'],
@@ -27,7 +26,6 @@ export default function DeclarationSearchForm() {
     const [error, setError] = useState(null);
     const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
-    const [email, setEmail] = useDemoEmail();
 
     function updateField(field) {
         return (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
@@ -44,7 +42,7 @@ export default function DeclarationSearchForm() {
             const res = await fetch('/api/demo/disaster-declaration-tracker', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, email }),
+                body: JSON.stringify({ ...form }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -88,7 +86,7 @@ export default function DeclarationSearchForm() {
                     </div>
                 </div>
 
-                <DemoEmailField value={email} onChange={setEmail} />
+                <DemoRunGate />
 
                 <button className="btn" type="submit" disabled={pending}>
                     {pending ? 'Searching…' : 'Search declarations'}

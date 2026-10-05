@@ -1,4 +1,4 @@
-import { tryRecordDemoRun, hashDemoIp, isAllowedDemoOrigin, isValidDemoEmail } from '@/lib/db.js';
+import { guardDemoRun } from '@/lib/demoGate.js';
 
 const ACTOR_PATH = 'm_ctim~disaster-declaration-tracker';
 const DEMO_KEY = 'disaster-declaration-tracker';
@@ -17,19 +17,14 @@ export async function POST(request) {
         return Response.json({ error: 'Demo is not configured on this deployment.' }, { status: 500 });
     }
 
-    if (!isAllowedDemoOrigin(request)) {
-        return Response.json({ error: 'Forbidden.' }, { status: 403 });
-    }
+    const gate = await guardDemoRun(request, DEMO_KEY);
+    if (!gate.ok) return gate.response;
 
     let body;
     try {
         body = await request.json();
     } catch {
         return Response.json({ error: 'Invalid request body.' }, { status: 400 });
-    }
-
-    if (!isValidDemoEmail(body.email)) {
-        return Response.json({ error: 'Enter a valid email to run the demo.' }, { status: 400 });
     }
 
     const state = cleanState(body.state);
@@ -41,14 +36,6 @@ export async function POST(request) {
         daysBack: 90,
         maxResults: DEMO_MAX_RESULTS,
     };
-
-    const allowed = await tryRecordDemoRun(DEMO_KEY, hashDemoIp(request), body.email);
-    if (!allowed) {
-        return Response.json(
-            { error: "This live demo has hit today's free-run limit. Run it yourself on Apify, or check back tomorrow." },
-            { status: 429 }
-        );
-    }
 
     const apifyRes = await fetch(
         `https://api.apify.com/v2/acts/${ACTOR_PATH}/run-sync-get-dataset-items?token=${process.env.APIFY_TOKEN}`,

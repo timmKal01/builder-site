@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useDemoEmail } from '@/lib/useDemoEmail.js';
-import DemoEmailField from '@/components/DemoEmailField.js';
+import DemoRunGate from '@/components/DemoRunGate.js';
 
 const MAGNITUDES = [
     ['3', '3.0+ (minor)'],
@@ -23,7 +22,6 @@ export default function EarthquakeSearchForm() {
     const [error, setError] = useState(null);
     const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
-    const [email, setEmail] = useDemoEmail();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -36,7 +34,7 @@ export default function EarthquakeSearchForm() {
             const res = await fetch('/api/demo/earthquake-alert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ minMagnitude, email }),
+                body: JSON.stringify({ minMagnitude }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -66,7 +64,7 @@ export default function EarthquakeSearchForm() {
                     </select>
                 </div>
 
-                <DemoEmailField value={email} onChange={setEmail} />
+                <DemoRunGate />
 
                 <button className="btn" type="submit" disabled={pending}>
                     {pending ? 'Searching…' : 'Search earthquakes'}

@@ -168,7 +168,7 @@ const FAQ = [
     },
     {
         q: 'Do I need an account to try one?',
-        a: 'Not for the live demos. The demo pages on this site run a real query against the real data source in your browser, capped to a few free runs a day for everyone. To run an actor with your own input or on a schedule you will need an Apify account, because that is the platform the actors run on.',
+        a: 'A free one, for the live demos. The demo pages run a real query against the real data source, which costs us a little each time, so an account keeps that honest and gives the daily cap something real to count. No card is asked for. To run an actor with your own input or on a schedule you will need an Apify account instead, because that is the platform the actors run on.',
     },
     {
         q: 'Where does the data come from?',
@@ -274,8 +274,8 @@ export default async function HomePage() {
                                 </div>
                                 <ul className="visual-card__tags">
                                     <li>Runs in your browser</li>
-                                    <li>No account</li>
-                                    <li>Free to try</li>
+                                    <li>Free account</li>
+                                    <li>No card</li>
                                 </ul>
                                 <Link href={showcase.demoPath} className="visual-card__cta">
                                     Try it now
@@ -429,7 +429,7 @@ export default async function HomePage() {
                             <dl className="price-list">
                                 <div>
                                     <dt>Account needed</dt>
-                                    <dd>No</dd>
+                                    <dd>Free one</dd>
                                 </div>
                                 <div>
                                     <dt>Card needed</dt>

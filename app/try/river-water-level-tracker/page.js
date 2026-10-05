@@ -11,7 +11,7 @@ export default function TryRiverLevelPage() {
     return (
         <div className="wrap">
             <div className="demo-intro">
-                <p className="hero__eyebrow">live demo · no account needed</p>
+                <p className="hero__eyebrow">live demo · free account</p>
                 <h1 className="hero__title">Check real-time river gauge readings by state.</h1>
                 <p className="hero__lede">
                     This calls the real{' '}

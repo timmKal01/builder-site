@@ -11,7 +11,7 @@ export default function TryNpmStatsPage() {
     return (
         <div className="wrap">
             <div className="demo-intro">
-                <p className="hero__eyebrow">live demo · no account needed</p>
+                <p className="hero__eyebrow">live demo · free account</p>
                 <h1 className="hero__title">Compare npm download counts, this period vs. last.</h1>
                 <p className="hero__lede">
                     This calls the real{' '}

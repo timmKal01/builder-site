@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useDemoEmail } from '@/lib/useDemoEmail.js';
-import DemoEmailField from '@/components/DemoEmailField.js';
+import DemoRunGate from '@/components/DemoRunGate.js';
 
 const ACTOR_URL = 'https://apify.com/m_ctim/website-lead-extractor';
 
@@ -12,7 +11,6 @@ export default function LeadExtractorForm() {
     const [error, setError] = useState(null);
     const [capped, setCapped] = useState(false);
     const [pending, setPending] = useState(false);
-    const [email, setEmail] = useDemoEmail();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -25,7 +23,7 @@ export default function LeadExtractorForm() {
             const res = await fetch('/api/demo/website-lead-extractor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url, email }),
+                body: JSON.stringify({ url }),
             });
             const data = await res.json();
             if (!res.ok) {
@@ -56,7 +54,7 @@ export default function LeadExtractorForm() {
                     />
                 </div>
 
-                <DemoEmailField value={email} onChange={setEmail} />
+                <DemoRunGate />
 
                 <button className="btn" type="submit" disabled={pending}>
                     {pending ? 'Scanning…' : 'Extract contacts'}
