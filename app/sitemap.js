@@ -10,6 +10,7 @@ export default async function sitemap() {
 
     const staticRoutes = [
         { path: '', priority: 1, changeFrequency: 'daily' },
+        { path: '/signals', priority: 0.9, changeFrequency: 'weekly' },
         { path: '/actors', priority: 0.9, changeFrequency: 'weekly' },
         { path: '/log', priority: 0.7, changeFrequency: 'weekly' },
     ].map(({ path, priority, changeFrequency }) => ({
