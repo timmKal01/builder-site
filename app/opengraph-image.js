@@ -34,7 +34,7 @@ export default function OpengraphImage() {
                         Public data APIs for recalls, grants &amp; court records
                     </div>
                     <div style={{ fontSize: 30, color: '#9aa3ab' }}>
-                        Clean JSON from public sources. $7 per 1,000. No logins.
+                        Clean JSON from public sources. Pay per event. No logins.
                     </div>
                 </div>
 

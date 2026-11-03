@@ -114,7 +114,7 @@ const FEATURES = [
     {
         icon: 'tag',
         title: 'You see the price first',
-        desc: 'Every actor costs $0.007 per event, $7 per 1,000. No subscription, no seats, no minimum. Many charge once per search rather than per row, so a search returning 50 results still costs $0.007.',
+        desc: 'Most actors cost $0.007 per event, $7 per 1,000, and every card shows its price. No subscription, no seats, no minimum. Many charge once per search rather than per row, so a search returning 50 results still costs $0.007.',
     },
     {
         icon: 'code',
@@ -164,7 +164,7 @@ const EXPECT_NO = [
 const FAQ = [
     {
         q: 'What does it actually cost?',
-        a: 'Every actor in the portfolio charges $0.007 per event, which works out to $7 per 1,000. There is no subscription and no seat cost. Many actors charge once per search rather than once per result row, so a query that returns fifty records still costs a single $0.007 event.',
+        a: 'Most actors charge $0.007 per event, which works out to $7 per 1,000. A few lead and social actors charge per row instead, from $0.001 to $0.02, and each actor shows its exact price on its Apify page. There is no subscription and no seat cost. Many actors charge once per search rather than once per result row, so a query that returns fifty records still costs a single $0.007 event.',
     },
     {
         q: 'Do I need an account to try one?',
@@ -388,7 +388,7 @@ export default async function HomePage() {
                 <div className="wrap">
                     <div className="section-head" data-reveal>
                         <span className="eyebrow">What it costs</span>
-                        <h2 className="section-title">One price, every actor.</h2>
+                        <h2 className="section-title">Pay for what you run.</h2>
                         <p className="section-lede">
                             Billing is per event on Apify: you pay for the runs you make and nothing
                             else. No plan to pick, no seats to count, no minimum spend.
@@ -399,10 +399,10 @@ export default async function HomePage() {
                         <article className="price-card price-card--feature" data-reveal style={{ '--i': 0 }}>
                             <div className="price-card__head">
                                 <h3 className="price-card__name">Pay per event</h3>
-                                <span className="badge">All actors</span>
+                                <span className="badge">Most actors</span>
                             </div>
                             <p className="price-card__amount">$0.007</p>
-                            <p className="price-card__unit">per charged event — $7 per 1,000</p>
+                            <p className="price-card__unit">per charged event, $7 per 1,000</p>
                             <dl className="price-list">
                                 <div>
                                     <dt>Subscription</dt>
@@ -564,7 +564,7 @@ export default async function HomePage() {
                             </a>
                         </div>
                         <p className="landing-cta__note">
-                            Public sources only · $0.007 per event · No logins
+                            Public sources only · Pay per event · No logins
                         </p>
                     </div>
                 </div>
