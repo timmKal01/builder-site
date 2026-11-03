@@ -20,7 +20,7 @@ export default async function ActorsPage() {
                 <p className="hero__lede">
                     Each one runs on Apify and returns clean JSON from public data. Every
                     actor costs $0.007 per event ($7 per 1,000), with no subscription and no seat.
-                    No proxies, no logins.
+                    No logins.
                 </p>
             </div>
 
