@@ -3,9 +3,9 @@ import ActorCard from '@/components/ActorCard.js';
 import { pageMeta } from '@/lib/site.js';
 
 export const metadata = pageMeta({
-    title: 'Public Data API Catalog: Recalls, Grants, Court & SEC Data',
+    title: 'Public Data API Catalog: Leads, Jobs, SEC & Government Data',
     description:
-        'Ready-to-run public data APIs: FDA and consumer recalls, federal grants, court opinions, SEC filings, NPI and FINRA lookups. Pay per event, no logins.',
+        'Ready-to-run APIs: Google Maps business leads, website audits, job listings, SEC filings, NPI lookups and US government data. Pay per event, no logins.',
     path: '/actors',
 });
 

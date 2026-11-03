@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getActorCatalog, getPortfolioCount } from '@/lib/actors.js';
+import { getActorCatalog } from '@/lib/actors.js';
 import ActorCard from '@/components/ActorCard.js';
 import { SOCIAL_LINKS } from '@/lib/social.js';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, jsonLd, pageMeta } from '@/lib/site.js';
@@ -131,7 +131,7 @@ const FEATURES = [
 const STEPS = [
     {
         title: 'Pick a feed',
-        desc: 'Browse the catalog by what you actually need: recalls, grants, filings, court opinions, security advisories, weather. Each one lists its source and its price up front.',
+        desc: 'Browse the catalog by what you actually need: leads, jobs, SEC filings, government data, weather. Each one lists its source and its price up front.',
     },
     {
         title: 'Try it in the browser',
@@ -172,7 +172,7 @@ const FAQ = [
     },
     {
         q: 'Where does the data come from?',
-        a: 'Official public APIs and open government data: the FDA, FEMA, USAspending, the SEC, CourtListener, the NWS, USGS, GitHub Security Advisories, and similar sources. Each actor names its source in its README and on its Apify page.',
+        a: 'Official public APIs and open government data: the SEC, USAspending, the NPI registry, the National Weather Service, NOAA and the BLS, plus Google Maps and company career boards for the lead and job actors. Each actor names its source in its README and on its Apify page.',
     },
     {
         q: 'Do these scrape sites or use proxies?',
@@ -203,8 +203,7 @@ function formatPriceRange(min, max) {
 }
 
 export default async function HomePage() {
-    const [actors, portfolioCount] = await Promise.all([getActorCatalog(), getPortfolioCount()]);
-    const liveCount = portfolioCount ?? actors.length;
+    const actors = await getActorCatalog();
     const prices = actors.map((a) => a.priceUsd).filter((p) => p != null);
     const minPrice = prices.length ? Math.min(...prices) : null;
     const maxPrice = prices.length ? Math.max(...prices) : null;
@@ -231,17 +230,17 @@ export default async function HomePage() {
                     <div>
                         <p className="badge rise" style={{ '--i': 0 }}>
                             <span className="badge__dot" aria-hidden="true" />
-                            {liveCount} actors live on Apify
+                            Live on the Apify Store
                         </p>
                         <h1 className="hero__title rise" style={{ '--i': 1 }}>
-                            Public records in,{' '}
+                            Public data in,{' '}
                             <span className="text-grad">clean JSON out.</span>
                         </h1>
                         <p className="hero__lede rise" style={{ '--i': 2 }}>
-                            Ready-to-run APIs that turn public data into structured results: FDA
-                            recalls, federal grants, court opinions, SEC filings, provider and broker
-                            lookups, security advisories and more. Run one on demand, pay {priceLabel} an
-                            event, and skip the scraper you were about to write.
+                            Ready-to-run APIs for local business leads from Google Maps, website
+                            audits, jobs from company career boards, SEC filings and official US
+                            government data. Run one on demand, pay per event, and skip the scraper
+                            you were about to write.
                         </p>
                         <div className="hero-ctas rise" style={{ '--i': 3 }}>
                             <Link href="#portfolio" className="cta-btn cta-btn--primary">
@@ -284,8 +283,8 @@ export default async function HomePage() {
 
                             <div className="visual-card visual-card--accent drift--slow">
                                 <div className="visual-stat visual-stat--lead">
-                                    <p className="visual-stat__label">Actors live</p>
-                                    <p className="visual-stat__value">{liveCount}</p>
+                                    <p className="visual-stat__label">Runs on</p>
+                                    <p className="visual-stat__value">Apify</p>
                                 </div>
                                 <div className="visual-card__split">
                                     <div className="visual-stat">
@@ -363,8 +362,8 @@ export default async function HomePage() {
                         <span className="eyebrow">The catalog</span>
                         <h2 className="section-title">Pick a feed, or see what is next.</h2>
                         <p className="section-lede">
-                            {actors.length} featured actors out of {liveCount} live, each one calling an
-                            official public source and returning structured results.
+                            Featured actors from the catalog, each one returning structured results
+                            from a public source.
                             {demoCount > 0 && ` ${demoCount} of them have a live demo you can run right here.`}
                         </p>
                     </div>
