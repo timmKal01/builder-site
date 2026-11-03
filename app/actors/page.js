@@ -5,7 +5,7 @@ import { pageMeta } from '@/lib/site.js';
 export const metadata = pageMeta({
     title: 'Public Data API Catalog: Recalls, Grants, Court & SEC Data',
     description:
-        'Ready-to-run public data APIs: FDA and consumer recalls, federal grants, court opinions, SEC filings, NPI and FINRA lookups. $0.007 per event, no logins.',
+        'Ready-to-run public data APIs: FDA and consumer recalls, federal grants, court opinions, SEC filings, NPI and FINRA lookups. Pay per event, no logins.',
     path: '/actors',
 });
 
@@ -18,8 +18,8 @@ export default async function ActorsPage() {
                 <p className="hero__eyebrow">The portfolio</p>
                 <h1 className="hero__title">Data tools, callable on demand.</h1>
                 <p className="hero__lede">
-                    Each one runs on Apify and returns clean JSON from public data. Every
-                    actor costs $0.007 per event ($7 per 1,000), with no subscription and no seat.
+                    Each one runs on Apify and returns clean JSON from public data. Most
+                    cost $0.007 per event ($7 per 1,000), each card shows its price, and there is no subscription or seat.
                     No logins.
                 </p>
             </div>
