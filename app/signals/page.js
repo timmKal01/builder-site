@@ -78,7 +78,7 @@ const FAQ = [
     },
     {
         q: 'Where does the data come from?',
-        a: 'The same public sources behind the pay-per-use catalog: business listings, public company pages, job boards and the sites themselves. Nothing comes from behind a login, and nothing works around bot protection.',
+        a: 'The same public sources behind the pay-per-use catalog: business listings, public company pages, job boards and the sites themselves. Nothing comes from behind a login.',
     },
     {
         q: 'How do I pay from Kenya?',

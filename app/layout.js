@@ -239,7 +239,7 @@ export default function RootLayout({ children }) {
 
                         <div className="site-footer__bottom">
                             <span>&copy; 2026 Timothy Kalungu. All rights reserved.</span>
-                            <span>Built on public data. No proxies, no logins.</span>
+                            <span>Built on public data. No logins.</span>
                         </div>
                     </div>
                 </footer>

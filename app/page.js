@@ -109,7 +109,7 @@ const FEATURES = [
     {
         icon: 'shield',
         title: 'Public data, played straight',
-        desc: 'Official public APIs and open government data. No proxies, nothing that works around bot protection, and no actor logs in to anything or asks for your passwords. When a page has to be read directly, robots.txt is respected.',
+        desc: 'Official public APIs and open government data first. No actor logs in to anything or asks for your passwords. Google Maps is the one exception on proxies: it turns away cloud servers, so the Google Maps lead actors read it through Apify residential proxies.',
     },
     {
         icon: 'tag',
@@ -176,7 +176,7 @@ const FAQ = [
     },
     {
         q: 'Do these scrape sites or use proxies?',
-        a: 'No. Nothing in the portfolio uses proxies, works around bot protection, or logs in to anything. Where an actor reads a page directly rather than calling an API, it checks robots.txt first. Any source that would need an account or a key the user has to create is left out of the catalog.',
+        a: 'Mostly no. Most actors call official public APIs. Google Maps Leads and Website Gap Finder read Google Maps through Apify residential proxies, because Google turns away cloud servers, and that cost is built into their price. No actor logs in to anything or uses your cookies, and the X actor runs on the official X API with your own key.',
     },
     {
         q: 'Can I see the code?',
@@ -188,7 +188,7 @@ const FAQ = [
     },
     {
         q: 'Can you build one for a source I need?',
-        a: 'Often, yes, as long as the source is public and does not require an account, a proxy or anything that works around bot protection. The build log tracks what is shipping next and the GitHub profile is the quickest way to get in touch.',
+        a: 'Often, yes, as long as the data is public and does not sit behind a login. The build log tracks what is shipping next and the GitHub profile is the quickest way to get in touch.',
     },
 ];
 
@@ -253,7 +253,7 @@ export default async function HomePage() {
                         </div>
                         <ul className="trust-row rise" style={{ '--i': 4 }}>
                             <li>{CheckIcon} No subscription</li>
-                            <li>{CheckIcon} No proxies, no logins</li>
+                            <li>{CheckIcon} No logins</li>
                             <li>{CheckIcon} Source on GitHub</li>
                         </ul>
                     </div>
@@ -564,7 +564,7 @@ export default async function HomePage() {
                             </a>
                         </div>
                         <p className="landing-cta__note">
-                            Public sources only · $0.007 per event · No proxies, no logins
+                            Public sources only · $0.007 per event · No logins
                         </p>
                     </div>
                 </div>
