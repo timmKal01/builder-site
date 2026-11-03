@@ -2,11 +2,11 @@ import { ImageResponse } from 'next/og';
 
 // The preview card shown when a Tidefeed link is shared on X, LinkedIn,
 // WhatsApp, Slack, etc. Pages without their own image inherit this one.
-export const alt = 'Tidefeed: public data APIs for recalls, grants and court records';
+export const alt = 'Tidefeed: data APIs for leads, jobs and SEC filings';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const SOURCES = ['FDA recalls', 'Federal grants', 'Court opinions', 'SEC filings', 'NPI registry', 'FINRA BrokerCheck'];
+const SOURCES = ['Google Maps', 'Job boards', 'SEC filings', 'NPI registry', 'USAspending', 'Weather alerts'];
 
 export default function OpengraphImage() {
     return new ImageResponse(
@@ -31,7 +31,7 @@ export default function OpengraphImage() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
                     <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, letterSpacing: -1.5, maxWidth: 980 }}>
-                        Public data APIs for recalls, grants &amp; court records
+                        Data APIs for leads, jobs and SEC filings
                     </div>
                     <div style={{ fontSize: 30, color: '#9aa3ab' }}>
                         Clean JSON from public sources. Pay per event. No logins.
