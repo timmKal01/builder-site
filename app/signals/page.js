@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { listSources } from '@/lib/signals/sources.js';
 import { PLANS, PRICES, formatPrice } from '@/lib/signals/plans.js';
-import { SITE_URL, jsonLd, pageMeta } from '@/lib/site.js';
+import { jsonLd, pageMeta } from '@/lib/site.js';
 
+// Since 2026-11-06 this page sells one thing: web design leads from Website Gap Finder, every week.
 export const metadata = pageMeta({
-    title: 'Lead Signals: Saved Searches That Only Show You What Is New',
+    title: 'Web Design Leads: Businesses With No or Bad Websites, Weekly',
     description:
-        'Saved searches over local business and company data that run on a schedule and surface only leads you have not seen before. From $49 or KES 2,500 a month.',
+        'New web design clients every week: local businesses with no website, or a broken or dated one, each with a score, the problems found and a pitch line. Free plan; Pro $19 or KES 1,500 a month.',
     path: '/signals',
 });
 
@@ -40,45 +40,62 @@ const Chevron = (
 
 const STEPS = [
     {
-        title: 'Describe what you sell to',
-        desc: 'Local businesses with a weak website, companies hiring for a role you build for, sites running the platform you migrate people off. Whatever your version of a good lead looks like.',
+        title: 'Tell it who you build for',
+        desc: 'A type of business from the list, or anything you type, like "yoga studio" or "pet groomer", and up to five cities you work in.',
     },
     {
-        title: 'It runs on a schedule',
-        desc: 'Weekly, or daily on a paid plan. You do not open anything, press anything, or remember anything.',
+        title: 'It checks Google Maps and every website',
+        desc: 'Every listing in those cities, and each business\'s own site: does it load, is it secure, does it fit a phone screen, when was it last touched.',
     },
     {
         title: 'You only see what is new',
-        desc: 'Every business it has already shown you is remembered. Run it fifty times and you never see the same lead twice.',
+        desc: 'Every business it has already shown you is remembered, so each run brings fresh leads, never last week\'s list again.',
     },
     {
-        title: 'You call them',
-        desc: 'Each lead carries what is wrong, a score, and a public contact where one is listed. That is the part we cannot do for you.',
+        title: 'You make the call',
+        desc: 'Each lead has its phone, Google Maps link, the problems found and a one-line pitch. Work through them on your dashboard or download a CSV.',
     },
 ];
 
+// A real row from Website Gap Finder (2026-10-22), with the salon's name, website and phone hidden.
+const EXAMPLE = {
+    name: 'Nail salon in Brooklyn, New York (name hidden)',
+    score: 45,
+    status: 'Website works, but dated',
+    reasons: ['Copyright still says 2016', 'No meta description'],
+    pitch: "(Salon)'s website still says © 2016 and is missing basic SEO tags; a refresh could bring in more customers.",
+};
+
 const YES = [
-    'Leads you have not already been shown',
-    'Public contact details where the business lists them',
-    'A score and the reasons behind it, not a raw dump',
+    'Businesses you have not been shown before',
+    'The phone, Google Maps link and any public email the business lists',
+    'A 0-100 score, the problems found and a pitch line',
     'A price in your own currency',
 ];
 
 const NO = [
-    'A database you can export in one go',
+    'Emails written or sent for you',
     'Personal data, or anything behind a login',
-    'Verified or enriched email addresses',
+    'A verified email address for every lead',
     'Leads nobody else could ever find',
 ];
 
 const FAQ = [
     {
-        q: 'What makes this different from running the search myself?',
-        a: 'Memory. Any tool can give you a list today, and most of that list is the same as yesterday. A signal records every business it has ever shown you and surfaces only the rest, so what arrives is always worth reading. That is the whole product.',
+        q: 'Where do the leads come from?',
+        a: 'Google Maps listings for the cities you pick, and each business\'s own public website. The checks are done by Website Gap Finder, the same tool anyone can run on the Apify Store; this saves you running, filtering and de-duplicating it every week.',
     },
     {
-        q: 'Where does the data come from?',
-        a: 'The same public sources behind the pay-per-use catalog: business listings, public company pages, job boards and the sites themselves. Nothing comes from behind a login.',
+        q: 'What counts as a website gap?',
+        a: 'No website at all, only a Facebook or Instagram page, a site that does not load, a shut-down site builder, or a site that works but is dated: no https, not built for phones, an old copyright year, missing a page title or description. Each problem adds to the 0-100 score.',
+    },
+    {
+        q: 'How fresh are the leads?',
+        a: 'Every run searches and checks the websites live, the morning it runs. Nothing comes from an old database.',
+    },
+    {
+        q: 'Do you write or send the emails for me?',
+        a: 'No. You get the leads, what is wrong with each website and a pitch line, and you reach out your own way: a call, a visit, an email or a DM.',
     },
     {
         q: 'How do I pay from Kenya?',
@@ -86,11 +103,11 @@ const FAQ = [
     },
     {
         q: 'What happens if I stop paying?',
-        a: 'You drop back to the free plan rather than losing access. One weekly signal keeps running, and anything held back while you were away is still waiting if you come back.',
+        a: 'You drop back to the free plan rather than losing access. One weekly search in one city keeps running, and every lead you were already sent stays on your dashboard.',
     },
     {
         q: 'Can I try it without a card?',
-        a: 'Yes. The free plan is one saved search, run weekly, with a capped number of new leads each run. No card, and nothing expires.',
+        a: 'Yes. The free plan is one search in one city, run weekly, with up to 10 new leads a run. No card, and nothing expires.',
     },
     {
         q: 'Is there a contract?',
@@ -111,7 +128,6 @@ function faqSchema(items) {
 }
 
 export default function SignalsPage() {
-    const sources = listSources();
     const price = (currency, interval) => formatPrice(PRICES.pro[currency][interval], currency);
 
     return (
@@ -129,12 +145,13 @@ export default function SignalsPage() {
                         Free plan, no card
                     </p>
                     <h1 className="hero__title rise" style={{ '--i': 1 }}>
-                        The same list every week{' '}
-                        <span className="text-grad">is not a lead list.</span>
+                        New web design clients,{' '}
+                        <span className="text-grad">every week.</span>
                     </h1>
                     <p className="hero__lede rise" style={{ '--i': 2 }}>
-                        Save a search once. It runs on a schedule and shows you only the businesses it
-                        has never shown you before. No scrolling past the forty you already called.
+                        Pick a type of business and the cities you work in. Every week it finds the ones on
+                        Google Maps with no website, or a broken or dated one, checks each site, and shows you
+                        only the businesses you have not seen before, each with a score and a pitch line.
                     </p>
                     <div className="hero-ctas rise" style={{ '--i': 3 }}>
                         <Link href="/sign-up" className="cta-btn cta-btn--primary">
@@ -145,7 +162,7 @@ export default function SignalsPage() {
                         </Link>
                     </div>
                     <ul className="trust-row rise" style={{ '--i': 4 }}>
-                        <li>{Check} One search free, forever</li>
+                        <li>{Check} One city free, forever</li>
                         <li>{Check} Pay in KES or USD</li>
                         <li>{Check} Cancel whenever</li>
                     </ul>
@@ -156,12 +173,12 @@ export default function SignalsPage() {
             <section className="band band--alt">
                 <div className="wrap">
                     <div className="section-head" data-reveal>
-                        <span className="eyebrow">The idea</span>
+                        <span className="eyebrow">How it works</span>
                         <h2 className="section-title">A list goes stale. A feed does not.</h2>
                         <p className="section-lede">
-                            Pull a list of businesses twice a week and most of the second list is the
-                            first list. The work is not finding them, it is working out which ones are
-                            new. A signal does that bit.
+                            Pull the same search twice and most of the second list is the first list. The
+                            work is not finding businesses, it is knowing which ones need a website and which
+                            you have not pitched yet. This does both.
                         </p>
                     </div>
 
@@ -178,32 +195,48 @@ export default function SignalsPage() {
                     </ol>
 
                     <p className="callout" data-reveal>
-                        <strong>Where it lands today:</strong> new matches collect in your dashboard,
-                        ready to work through. Email digests are being wired up next, so for now
+                        <strong>Where it lands today:</strong> new leads collect on your dashboard,
+                        ready to work through or download as a CSV. A Monday email is coming, so for now
                         you go and look rather than being told.
                     </p>
                 </div>
             </section>
 
-            {/* ---------- Sources ---------- */}
-            <section className="band" id="sources">
+            {/* ---------- Example lead ---------- */}
+            <section className="band" id="example">
                 <div className="wrap">
                     <div className="section-head" data-reveal>
-                        <span className="eyebrow">What you can watch</span>
-                        <h2 className="section-title">Four things worth being told about.</h2>
+                        <span className="eyebrow">What a lead looks like</span>
+                        <h2 className="section-title">Every lead says why it is a lead.</h2>
                         <p className="section-lede">
-                            Each one is a different reason a business is about to spend money. Pick the
-                            one that matches what you sell.
+                            A real one, from a check of local businesses in five countries. The salon&rsquo;s
+                            name, website and phone are hidden here; on your dashboard you see all of them.
                         </p>
                     </div>
 
                     <div className="features-grid">
-                        {sources.map((s, i) => (
-                            <article className="feature-card" key={s.key} data-reveal style={{ '--i': i }}>
-                                <h3 className="feature-card__title">{s.label}</h3>
-                                <p className="feature-card__desc">{s.blurb}</p>
-                            </article>
-                        ))}
+                        <article className="feature-card" data-reveal>
+                            <h3 className="feature-card__title">{EXAMPLE.name}</h3>
+                            <p className="feature-card__desc">
+                                <strong>Score {EXAMPLE.score}/100</strong> · {EXAMPLE.status}
+                            </p>
+                            <ul className="feature-card__desc">
+                                {EXAMPLE.reasons.map((r) => (
+                                    <li key={r}>{r}</li>
+                                ))}
+                            </ul>
+                            <p className="feature-card__desc">
+                                <em>Pitch line:</em> {EXAMPLE.pitch}
+                            </p>
+                        </article>
+                        <article className="feature-card" data-reveal style={{ '--i': 1 }}>
+                            <h3 className="feature-card__title">And the ones with no website at all</h3>
+                            <p className="feature-card__desc">
+                                Choose &ldquo;no website only&rdquo; and every lead is a business with no site, or only a
+                                Facebook or Instagram page: the easiest pitch there is. In one check of Denver plumbers,
+                                19 of 160 on Google Maps had no website listed.
+                            </p>
+                        </article>
                     </div>
                 </div>
             </section>
@@ -227,7 +260,7 @@ export default function SignalsPage() {
                                 <span className="badge">No card</span>
                             </div>
                             <p className="price-card__amount">0</p>
-                            <p className="price-card__unit">one saved search, weekly</p>
+                            <p className="price-card__unit">one search in one city, weekly</p>
                             <dl className="price-list">
                                 <div>
                                     <dt>Saved searches</dt>
@@ -256,11 +289,11 @@ export default function SignalsPage() {
                             <dl className="price-list">
                                 <div>
                                     <dt>Saved searches</dt>
-                                    <dd>{PLANS.pro.signals}</dd>
+                                    <dd>{PLANS.pro.signals}, up to {PLANS.pro.cities} cities each</dd>
                                 </div>
                                 <div>
-                                    <dt>New leads per run</dt>
-                                    <dd>up to {PLANS.pro.maxNewPerRun}</dd>
+                                    <dt>New leads a month</dt>
+                                    <dd>up to {PLANS.pro.maxNewPerMonth.toLocaleString('en-US')}</dd>
                                 </div>
                                 <div>
                                     <dt>Runs</dt>
@@ -281,11 +314,11 @@ export default function SignalsPage() {
                             <dl className="price-list">
                                 <div>
                                     <dt>Saved searches</dt>
-                                    <dd>{PLANS.pro.signals}</dd>
+                                    <dd>{PLANS.pro.signals}, up to {PLANS.pro.cities} cities each</dd>
                                 </div>
                                 <div>
-                                    <dt>New leads per run</dt>
-                                    <dd>up to {PLANS.pro.maxNewPerRun}</dd>
+                                    <dt>New leads a month</dt>
+                                    <dd>up to {PLANS.pro.maxNewPerMonth.toLocaleString('en-US')}</dd>
                                 </div>
                                 <div>
                                     <dt>Runs</dt>
@@ -308,8 +341,8 @@ export default function SignalsPage() {
                             <li>
                                 {Check}
                                 <span>
-                                    Leads held back by a plan&rsquo;s per-run cap are not thrown away.
-                                    They arrive on the next run, highest-scoring first.
+                                    Every lead is searched and checked live the week it arrives, not
+                                    pulled from an old database. The worst websites come first.
                                 </span>
                             </li>
                             <li>
@@ -385,18 +418,18 @@ export default function SignalsPage() {
             <section className="landing-cta">
                 <div className="wrap">
                     <div className="landing-cta__inner" data-reveal>
-                        <h2 className="landing-cta__title">Save one search and see what turns up.</h2>
+                        <h2 className="landing-cta__title">Pick a city and see who needs a website.</h2>
                         <p className="landing-cta__lede">
-                            The free plan is one search, run weekly, for as long as you want it. If
-                            nothing useful arrives, you have lost nothing.
+                            The free plan is one search in one city, run weekly, for as long as you want it.
+                            If nothing useful arrives, you have lost nothing.
                         </p>
                         <div className="hero-ctas">
                             <Link href="/sign-up" className="cta-btn cta-btn--primary">
                                 Start free
                             </Link>
-                            <Link href="/actors" className="cta-btn cta-btn--ghost">
-                                Or the pay-per-use catalog
-                            </Link>
+                            <a href="https://apify.com/m_ctim/website-gap-finder" className="cta-btn cta-btn--ghost">
+                                Or run Website Gap Finder yourself
+                            </a>
                         </div>
                         <p className="landing-cta__note">
                             No card · {price('KES', 'monthly')} or {price('USD', 'monthly')} a month when you want more

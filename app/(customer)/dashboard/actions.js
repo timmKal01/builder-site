@@ -3,30 +3,24 @@
 import { revalidatePath } from 'next/cache';
 import { requireAccount } from '@/lib/signals/account.js';
 import { createSignal, countSignalsForAccount, setSignalActive } from '@/lib/signals/db.js';
-import { isKnownSource, getSource } from '@/lib/signals/sources.js';
 import { effectivePlan } from '@/lib/signals/plans.js';
+import { searchInput } from '@/lib/signals/gapFinder.js';
 
 const MAX_NAME = 80;
+const SOURCE = 'website-gap-finder';
 
 export async function createSignalAction(prevState, formData) {
     const account = await requireAccount();
     if (!account) return { error: 'Sign in again to continue.' };
 
     const name = String(formData.get('name') ?? '').trim();
-    const source = String(formData.get('source') ?? '');
     const schedule = String(formData.get('schedule') ?? '');
-    const query = String(formData.get('query') ?? '').trim();
 
-    if (!name) return { error: 'Give the signal a name.' };
+    if (!name) return { error: 'Give the search a name.' };
     if (name.length > MAX_NAME) return { error: `Keep the name under ${MAX_NAME} characters.` };
 
-    // isKnownSource uses a prototype-safe lookup, so '__proto__' or
-    // 'constructor' posted here cannot resolve to something runnable.
-    if (!isKnownSource(source)) return { error: 'Pick a source.' };
-    if (!query) return { error: 'Say what to search for.' };
-
     // The plan is checked at creation as well as at run time. The cron would
-    // park an over-limit signal anyway, but silently never running something
+    // park an over-limit search anyway, but silently never running something
     // the customer just created is a bad way to find out.
     const plan = effectivePlan(account);
     if (!plan.schedules.includes(schedule)) {
@@ -39,25 +33,34 @@ export async function createSignalAction(prevState, formData) {
             error:
                 plan.lapsed
                     ? `Your plan has lapsed, so you are limited to ${plan.signals}. Renew to add more.`
-                    : `The ${plan.label} plan allows ${plan.signals} signal${plan.signals === 1 ? '' : 's'}.`,
+                    : `The ${plan.label} plan allows ${plan.signals} search${plan.signals === 1 ? '' : 'es'}.`,
         };
     }
 
-    const definition = getSource(source);
+    // The search itself becomes Website Gap Finder's input (lib/signals/gapFinder.js).
+    const { input, error } = searchInput(
+        {
+            businessType: formData.get('businessType'),
+            term: formData.get('term'),
+            citiesText: formData.get('cities'),
+            leadType: formData.get('leadType'),
+            minScore: formData.get('minScore'),
+        },
+        { maxCities: plan.cities }
+    );
+    if (error) return { error };
+
     await createSignal({
         accountId: account.id,
         name,
-        source,
-        // Each source reads its own search text, so the free-form field is
-        // mapped onto whatever that actor calls it rather than guessing a
-        // shared shape across four different actors.
-        input: { ...definition.defaultInput, query },
+        source: SOURCE,
+        input,
         schedule,
         deliverTo: [account.email],
     });
 
     revalidatePath('/dashboard');
-    return { ok: 'Signal created. It runs on the next scheduled pass.' };
+    return { ok: 'Search saved. Its first leads arrive on the next scheduled run (every morning at 06:00 UTC).' };
 }
 
 export async function toggleSignalAction(formData) {

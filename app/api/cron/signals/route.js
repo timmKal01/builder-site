@@ -1,6 +1,7 @@
-import { getDueSignals, startRun, finishRun, filterSeen, commitMatches, touchSignal } from '@/lib/signals/db.js';
-import { runSignal, SignalRunError } from '@/lib/signals/runner.js';
+import { getDueSignals, startRun, finishRun, filterSeen, commitMatches, touchSignal, countDeliveredThisMonth } from '@/lib/signals/db.js';
+import { runSignal, SignalRunError, ACTOR_TIMEOUT_SECS } from '@/lib/signals/runner.js';
 import { effectivePlan } from '@/lib/signals/plans.js';
+import { citiesOf } from '@/lib/signals/gapFinder.js';
 
 // Vercel Cron hits this on a schedule (see vercel.json) and runs every signal
 // that is due.
@@ -13,12 +14,13 @@ import { effectivePlan } from '@/lib/signals/plans.js';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
 
-// Stop starting new signals with this much of the budget left, so the ones
-// already running get to finish and record their matches. A signal cut off
-// mid-run rolls back and is simply due again on the next tick; the damage of
-// overrunning is an unrecorded run, not a lost lead.
-const TIME_BUDGET_MS = 240_000;
-const RESERVE_MS = 45_000;
+// A new signal starts only while its whole actor run still fits inside the
+// function's limit, with a margin. Being cut off mid-run is worse than it looks:
+// Gap Finder remembers what it returned for the signal, so a run whose rows were
+// never committed here would lose those leads. A signal left over is simply due
+// on the next tick.
+const MAX_DURATION_MS = 300_000;
+const RUN_BUDGET_MS = ACTOR_TIMEOUT_SECS * 1000 + 20_000;
 const MAX_PER_TICK = 25;
 
 function unauthorized() {
@@ -52,7 +54,10 @@ export async function GET(request) {
 
     const startedAt = Date.now();
     const db = { startRun, finishRun, filterSeen, commitMatches };
-    const summary = { ran: 0, newLeads: 0, empty: 0, failed: 0, gated: 0, skipped: 0, signals: [] };
+    const summary = { ran: 0, newLeads: 0, empty: 0, failed: 0, gated: 0, capped: 0, skipped: 0, signals: [] };
+    // Leads each account has had this month, read once per account and kept
+    // current as this tick delivers more.
+    const deliveredThisMonth = new Map();
 
     let due;
     try {
@@ -80,9 +85,25 @@ export async function GET(request) {
             continue;
         }
 
-        if (Date.now() - startedAt > TIME_BUDGET_MS - RESERVE_MS) {
+        // The monthly cap. A run asks Gap Finder for at least one lead per city,
+        // so a search is parked once fewer leads are left than it has cities:
+        // anything it returned over the cap would be remembered by Gap Finder
+        // and never delivered.
+        if (!deliveredThisMonth.has(signal.account_id)) {
+            deliveredThisMonth.set(signal.account_id, await countDeliveredThisMonth(signal.account_id));
+        }
+        const leftThisMonth = plan.maxNewPerMonth - deliveredThisMonth.get(signal.account_id);
+        const maxNew = Math.min(plan.maxNewPerRun, leftThisMonth);
+        if (maxNew < Math.max(1, citiesOf(signal.input).length)) {
+            await touchSignal(signal.id);
+            summary.capped += 1;
+            summary.signals.push({ id: signal.id, name: signal.name, capped: plan.name });
+            continue;
+        }
+
+        if (Date.now() - startedAt > MAX_DURATION_MS - RUN_BUDGET_MS) {
             // Everything left stays due and is picked up on the next tick.
-            summary.skipped = due.length - summary.ran - summary.failed - summary.gated;
+            summary.skipped = due.length - summary.ran - summary.failed - summary.gated - summary.capped;
             break;
         }
 
@@ -90,8 +111,9 @@ export async function GET(request) {
             const result = await runSignal(signal, {
                 db,
                 token: process.env.APIFY_TOKEN,
-                maxNew: plan.maxNewPerRun,
+                maxNew,
             });
+            deliveredThisMonth.set(signal.account_id, deliveredThisMonth.get(signal.account_id) + result.fresh.length);
             summary.ran += 1;
             summary.newLeads += result.fresh.length;
             if (result.fresh.length === 0) {
