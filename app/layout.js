@@ -123,7 +123,7 @@ export default function RootLayout({ children }) {
                     <div className="site-header__row">
                         <Wordmark />
                         <nav className="site-nav">
-                            <Link href="/signals">Signals</Link>
+                            <Link href="/signals">Web design leads</Link>
                             <Link href="/actors">Catalog</Link>
                             <Link href="/#pricing">Pricing</Link>
                             <Link href="/log">Build log</Link>
@@ -178,7 +178,7 @@ export default function RootLayout({ children }) {
                                 <h2 className="site-footer__col-title">Explore</h2>
                                 <ul className="site-footer__links">
                                     <li>
-                                        <Link href="/signals">Lead signals</Link>
+                                        <Link href="/signals">Web design leads</Link>
                                     </li>
                                     <li>
                                         <Link href="/actors">Full catalog</Link>

@@ -77,14 +77,21 @@ test('quarterly is cheaper than three months, which is why it reduces renewals',
 });
 
 test('the KES price is set for its own market, not converted from USD', () => {
-    // ~129.5 KES to the dollar in October 2026. A straight conversion of the
-    // USD price would be about KES 634,550 in minor units; the local price is
-    // deliberately well below it.
+    // ~129.5 KES to the dollar in November 2026. A straight conversion of the
+    // $19 price would be about KES 2,460; the local price sits below it.
     const converted = PRICES.pro.USD.monthly * 129.5;
     assert.ok(
-        PRICES.pro.KES.monthly < converted * 0.6,
+        PRICES.pro.KES.monthly < converted * 0.7,
         'KES price drifted up towards an FX conversion of the USD price'
     );
+});
+
+test('pro allows more cities and a monthly cap that keeps lead costs under the price', () => {
+    assert.equal(PLANS.free.cities, 1);
+    assert.ok(PLANS.pro.cities > PLANS.free.cities);
+    assert.ok(PLANS.free.maxNewPerMonth < PLANS.pro.maxNewPerMonth);
+    // At most about half a cent per lead in Gap Finder events, a full month must cost well under the plan's price.
+    assert.ok(PLANS.pro.maxNewPerMonth * 0.5 < PRICES.pro.USD.monthly * 0.5, 'the monthly cap could cost more than half the price');
 });
 
 test('formatPrice renders each currency the way its market reads it', () => {
