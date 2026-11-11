@@ -11,6 +11,13 @@ const nextConfig = {
                 destination: 'https://tidefeed.vercel.app/:path*',
                 permanent: true,
             },
+            // Google Maps Leads and the Email & Phone Extractor merged into Website Gap Finder (2026-11-11), so the
+            // extractor's demo page sends people to the actor that now does the job.
+            {
+                source: '/try/website-lead-extractor',
+                destination: 'https://apify.com/m_ctim/website-gap-finder',
+                permanent: true,
+            },
         ];
     },
 };
