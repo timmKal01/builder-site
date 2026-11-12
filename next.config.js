@@ -18,6 +18,12 @@ const nextConfig = {
                 destination: 'https://apify.com/m_ctim/website-gap-finder',
                 permanent: true,
             },
+            // Website Tech Stack Detector merged into Tech Stack Lead Finder (2026-11-13): no filters = every site's stack.
+            {
+                source: '/try/website-tech-stack-detector',
+                destination: 'https://apify.com/m_ctim/tech-stack-lead-finder',
+                permanent: true,
+            },
         ];
     },
 };
