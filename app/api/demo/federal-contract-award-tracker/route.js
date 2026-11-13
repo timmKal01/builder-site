@@ -24,6 +24,8 @@ export async function POST(request) {
     }
 
     const input = {
+        // The actor's default became open bids plus awards (2026-11-13); this demo shows awards, so ask for those only.
+        search: 'awards',
         keyword: clean(body.keyword),
         agency: clean(body.agency),
         recipientState: clean(body.recipientState, 2).toUpperCase(),
