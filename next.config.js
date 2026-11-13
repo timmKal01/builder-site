@@ -24,6 +24,12 @@ const nextConfig = {
                 destination: 'https://apify.com/m_ctim/tech-stack-lead-finder',
                 permanent: true,
             },
+            // Field Ops Risk Briefing merged into US Weather Forecast & Alerts (2026-11-13): its GPS and radio conditions are an option there now.
+            {
+                source: '/try/field-operations-risk-briefing',
+                destination: 'https://apify.com/m_ctim/us-weather-tracker',
+                permanent: true,
+            },
         ];
     },
 };
