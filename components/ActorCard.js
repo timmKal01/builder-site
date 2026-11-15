@@ -1,3 +1,5 @@
+import { formatEventPrice } from '@/lib/actors.js';
+
 export default function ActorCard({ actor, revealIndex }) {
     return (
         <article
@@ -16,7 +18,7 @@ export default function ActorCard({ actor, revealIndex }) {
 
             <div className="actor-card__footer">
                 <span className="actor-card__price">
-                    {actor.priceUsd != null ? `$${actor.priceUsd.toFixed(3)}/event` : 'free during launch'}
+                    {actor.priceUsd != null ? `${formatEventPrice(actor.priceUsd)}/event` : 'free during launch'}
                 </span>
                 <span className="actor-card__links">
                     <a href={actor.url} target="_blank" rel="noreferrer">
