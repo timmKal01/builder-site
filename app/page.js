@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getActorCatalog } from '@/lib/actors.js';
+import { formatEventPrice, getActorCatalog } from '@/lib/actors.js';
 import ActorCard from '@/components/ActorCard.js';
 import { SOCIAL_LINKS } from '@/lib/social.js';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, jsonLd, pageMeta } from '@/lib/site.js';
@@ -114,7 +114,7 @@ const FEATURES = [
     {
         icon: 'tag',
         title: 'You see the price first',
-        desc: 'Most actors cost $0.007 per event, $7 per 1,000, and every card shows its price. No subscription, no seats, no minimum. Many charge once per search rather than per row, so a search returning 50 results still costs $0.007.',
+        desc: 'Prices run from $0.00065 for a YouTube transcript to $0.007 for a search, and every card shows its price. No subscription, no seats, no minimum. Many charge once per search rather than per row, so a search returning 50 results is still one charge.',
     },
     {
         icon: 'code',
@@ -164,7 +164,7 @@ const EXPECT_NO = [
 const FAQ = [
     {
         q: 'What does it actually cost?',
-        a: 'Most actors charge $0.007 per event, which works out to $7 per 1,000. A few lead and social actors charge per row instead, from $0.001 to $0.02, and each actor shows its exact price on its Apify page. There is no subscription and no seat cost. Many actors charge once per search rather than once per result row, so a query that returns fifty records still costs a single $0.007 event.',
+        a: 'Each actor charges per result or per search, from $0.00065 (one YouTube transcript, $0.65 per 1,000) to $0.02 (one event listing), and shows its exact price on its Apify page. Many search tools charge $0.007 once per search rather than per row, so a query that returns fifty records is a single charge. There is no subscription and no seat cost.',
     },
     {
         q: 'Do I need an account to try one?',
@@ -194,9 +194,7 @@ const FAQ = [
 
 /* --- Helpers --- */
 
-function formatPrice(value) {
-    return value < 0.01 ? `$${value.toFixed(3)}` : `$${value.toFixed(2)}`;
-}
+const formatPrice = formatEventPrice;
 
 function formatPriceRange(min, max) {
     return min === max ? formatPrice(min) : `${formatPrice(min)}–${formatPrice(max)}`;
@@ -398,10 +396,10 @@ export default async function HomePage() {
                         <article className="price-card price-card--feature" data-reveal style={{ '--i': 0 }}>
                             <div className="price-card__head">
                                 <h3 className="price-card__name">Pay per event</h3>
-                                <span className="badge">Most actors</span>
+                                <span className="badge">Every actor</span>
                             </div>
-                            <p className="price-card__amount">$0.007</p>
-                            <p className="price-card__unit">per charged event, $7 per 1,000</p>
+                            <p className="price-card__amount">{priceLabel}</p>
+                            <p className="price-card__unit">per charged event, depending on the tool</p>
                             <dl className="price-list">
                                 <div>
                                     <dt>Subscription</dt>
