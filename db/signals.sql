@@ -58,6 +58,11 @@ CREATE TABLE IF NOT EXISTS signals (
     last_run_at timestamptz
 );
 
+-- When the Monday email last went out for this search. Separate from
+-- last_run_at because a weekly search can run on any day of the week, while
+-- the email always goes on Monday with everything new since the last one.
+ALTER TABLE signals ADD COLUMN IF NOT EXISTS last_emailed_at timestamptz;
+
 CREATE INDEX IF NOT EXISTS signals_account_idx ON signals (account_id);
 -- The cron tick asks "what is due?", so it reads by active + last_run_at and
 -- should never have to scan the whole table to find out.

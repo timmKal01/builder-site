@@ -10,6 +10,10 @@ export const metadata = pageMeta({
     path: '/signals',
 });
 
+// The page is built ahead of time, so this is read at build: setting the two
+// Resend variables in Vercel and redeploying is what switches the copy over.
+const EMAIL_LIVE = Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
+
 const svg = (p) => ({
     viewBox: '0 0 24 24',
     fill: 'none',
@@ -194,11 +198,19 @@ export default function SignalsPage() {
                         ))}
                     </ol>
 
-                    <p className="callout" data-reveal>
-                        <strong>Where it lands today:</strong> new leads collect on your dashboard,
-                        ready to work through or download as a CSV. A Monday email is coming, so for now
-                        you go and look rather than being told.
-                    </p>
+                    {EMAIL_LIVE ? (
+                        <p className="callout" data-reveal>
+                            <strong>Where it lands:</strong> every Monday morning an email brings you
+                            what is new since last week. Every lead also stays on your dashboard, ready
+                            to work through or download as a CSV.
+                        </p>
+                    ) : (
+                        <p className="callout" data-reveal>
+                            <strong>Where it lands today:</strong> new leads collect on your dashboard,
+                            ready to work through or download as a CSV. A Monday email is coming, so for now
+                            you go and look rather than being told.
+                        </p>
+                    )}
                 </div>
             </section>
 
