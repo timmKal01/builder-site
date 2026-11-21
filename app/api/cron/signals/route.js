@@ -2,6 +2,7 @@ import { getDueSignals, startRun, finishRun, filterSeen, commitMatches, touchSig
 import { runSignal, SignalRunError, ACTOR_TIMEOUT_SECS } from '@/lib/signals/runner.js';
 import { effectivePlan } from '@/lib/signals/plans.js';
 import { citiesOf } from '@/lib/signals/gapFinder.js';
+import { isCronAuthorized } from '@/lib/cronAuth.js';
 
 // Vercel Cron hits this on a schedule (see vercel.json) and runs every signal
 // that is due.
@@ -35,22 +36,8 @@ function describe(error) {
     return error.code || error.message || String(error);
 }
 
-// Vercel sends `Authorization: Bearer <CRON_SECRET>`. Compared with a length
-// check first because timingSafeEqual throws on a length mismatch.
-async function isAuthorized(request) {
-    const secret = process.env.CRON_SECRET;
-    if (!secret) return false;
-
-    const header = request.headers.get('authorization') ?? '';
-    const token = header.startsWith('Bearer ') ? header.slice(7) : '';
-    if (token.length !== secret.length) return false;
-
-    const { timingSafeEqual } = await import('node:crypto');
-    return timingSafeEqual(Buffer.from(token), Buffer.from(secret));
-}
-
 export async function GET(request) {
-    if (!(await isAuthorized(request))) return unauthorized();
+    if (!(await isCronAuthorized(request))) return unauthorized();
 
     const startedAt = Date.now();
     const db = { startRun, finishRun, filterSeen, commitMatches };
